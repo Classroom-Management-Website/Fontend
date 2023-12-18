@@ -22,7 +22,6 @@ interface ClassroomData {
 }
 
 
-
 export default function Page() {
     const router = useRouter();
     const [classroomsData, setClassroomsData] = useState(null);
@@ -30,20 +29,7 @@ export default function Page() {
     const [isMenuExpanded, setIsMenuExpanded] = useState(false);
     const [isValidToken, setIsValidToken] = useState(false);
     const [teacherData, setTeacherData] = useState<TeacherData | null>(null);
-    const [fetchClassrooms, setFetchClassrooms] = useState(false);
 
-
-    const fetcher = (url: string) => {
-      const token = getCookie('token');
-      return fetch(url, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then(res => res.json());
-    };
-    const { data, error } = useSWR(fetchClassrooms ? 'http://localhost:8989/api/classrooms' : null, fetcher);
-  // useEffect for handling classroom data
   useEffect(() => {
     // Function to check the token
     const checkTokenValidity = async () => {
@@ -56,7 +42,6 @@ export default function Page() {
           },
         });
         const data = await response.json();
-
 
         if (response.ok) {
           // Token is valid
@@ -77,21 +62,28 @@ export default function Page() {
     // Call the function to check token validity
     checkTokenValidity();
   }, []); // Empty dependency array to run only once on component mount
-  useEffect(() => {
-    if (data && data.classrooms) {
-      const classrooms = data.classrooms.map((classroom: ClassroomData) => ({
-        maLop: classroom.maLop,
-        tenLopHoc: classroom.tenLopHoc,
-        lichHoc: classroom.lichHoc
-      }));
-      setClassroomsData(classrooms);
-      console.log('Classrooms data:', data);
-    }
 
-    if (error) {
-      console.error('Error fetching classrooms:', error);
-    }
-  }, [data, error]); // Run when data or error changes
+  const reloadTableData = async () => {
+    const token = getCookie('token');
+    await fetch('http://localhost:8989/api/classrooms', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.classrooms) {
+        const classrooms = data.classrooms.map((classroom: ClassroomData) => ({
+          maLop: classroom.maLop,
+          tenLopHoc: classroom.tenLopHoc,
+          lichHoc: classroom.lichHoc
+        }));
+        setClassroomsData(classrooms);
+        console.log('Classrooms data:', data);
+      }
+    })
+  }
 
   async function handleLogout() {
     deleteCookie('token')
@@ -101,11 +93,9 @@ export default function Page() {
     router.push('/changePassword')
   }
 
-
-
   async function handleShowClassrooms() {
     if (teacherData && teacherData.maGv) {
-      setFetchClassrooms(true);
+      reloadTableData();
     }
   }
 
@@ -152,7 +142,7 @@ export default function Page() {
       )}
     </div>
     <div className="content-container">
-        {classroomsData && <Apptable blogs={classroomsData}/>}
+        {classroomsData && <Apptable blogs={classroomsData} customFunction={reloadTableData}/>}
       </div>
     </div>
 );}

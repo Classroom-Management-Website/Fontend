@@ -14,11 +14,11 @@ interface TableClassrooms {
     tenLopHoc: string;
     lichHoc: string;
   }[];
-
+  customFunction: () => void;
 }
 
 const Apptable = (props: TableClassrooms) => {
-  const { blogs } = props;
+  const { blogs, customFunction } = props;
   const [showModelCreate,setShowModelCreate] = useState<boolean>(false)
   const handleDeleteClassrooms = async (maLop: number, tenLopHoc: string) => {
     try {
@@ -39,6 +39,7 @@ const Apptable = (props: TableClassrooms) => {
       });
   
       if (response.ok) {
+        customFunction();
         alert(`Xóa thành công lớp học có tên ${tenLopHoc}.`);
       } else {
         alert('Đã có lỗi xảy ra');
@@ -92,6 +93,7 @@ const Apptable = (props: TableClassrooms) => {
       <CreateClassrooms 
         showModelCreate={showModelCreate}
         setShowModelCreate={setShowModelCreate}
+        customFunction={customFunction}
       />
     </>
   );

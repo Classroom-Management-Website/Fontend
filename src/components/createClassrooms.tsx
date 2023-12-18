@@ -9,12 +9,12 @@ import { useRouter } from 'next/navigation'
 interface IProps{
     showModelCreate: boolean;
     setShowModelCreate: (value: boolean) => void;
-
+    customFunction: () => void;
 }
 
 function CreateClassrooms(props: IProps) {
   const router = useRouter();
-    const {showModelCreate,setShowModelCreate} = props;
+    const {showModelCreate,setShowModelCreate,customFunction} = props;
     const [tenLopHoc,setTenLopHoc] = useState<string>('');
     const [lichHoc,setLichHoc] = useState<string>('');
 
@@ -45,6 +45,7 @@ function CreateClassrooms(props: IProps) {
           } else {
             handleCloseModal()
             alert('Thêm lớp học thành công');
+            customFunction();
           }
         } catch (error) {
           console.error('Error fetching classrooms:', error);
