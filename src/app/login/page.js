@@ -1,9 +1,10 @@
 "use client"
+import './page.css'
 import React, { useState } from "react";
 import { useEffect } from 'react';
-import "./styles.css";
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation'
+
 
 const Container = styled.div`
  background-color: #fff;
@@ -30,10 +31,10 @@ const SignUpContainer = styled.div`
     transform: translateX(100%);
     opacity: 1;
     z-index: 5;
-  ` 
-  : null}
+  `
+    : null}
  `;
- 
+
 
 const SignInContainer = styled.div`
  position: absolute;
@@ -45,7 +46,7 @@ const SignInContainer = styled.div`
  z-index: 2;
  ${props => (props.$signinIn !== true ? `transform: translateX(100%);` : null)}
  `;
- 
+
 const Form = styled.form`
  background-color: #ffffff;
  display: flex;
@@ -56,12 +57,12 @@ const Form = styled.form`
  height: 100%;
  text-align: center;
  `;
- 
+
 const Title = styled.h1`
  font-weight: bold;
  margin: 0;
  `;
- 
+
 const Input = styled.input`
  background-color: #eee;
  border: none;
@@ -70,7 +71,7 @@ const Input = styled.input`
  width: 100%;
  color: black;
  `;
- 
+
 
 const Button = styled.button`
     border-radius: 20px;
@@ -94,7 +95,7 @@ const GhostButton = styled(Button)`
  background-color: transparent;
  border-color: #ffffff;
  `;
- 
+
 const Anchor = styled.a`
  color: #333;
  font-size: 14px;
@@ -111,7 +112,7 @@ overflow: hidden;
 transition: transform 0.6s ease-in-out;
 z-index: 100;
 ${props =>
-  props.$signinIn !== true ? `transform: translateX(-100%);` : null}
+    props.$signinIn !== true ? `transform: translateX(-100%);` : null}
 `;
 
 const Overlay = styled.div`
@@ -130,7 +131,7 @@ transform: translateX(0);
 transition: transform 0.6s ease-in-out;
 ${props => (props.$signinIn !== true ? `transform: translateX(50%);` : null)}
 `;
- 
+
 const OverlayPanel = styled.div`
      position: absolute;
      display: flex;
@@ -176,7 +177,7 @@ function getCookie(cname) {
   const name = cname + "=";
   const decodedCookie = decodeURIComponent(document.cookie);
   const ca = decodedCookie.split(';');
-  
+
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
     while (c.charAt(0) === ' ') {
@@ -186,7 +187,7 @@ function getCookie(cname) {
       return c.substring(name.length, c.length);
     }
   }
-  
+
   return "";
 }
 
@@ -197,7 +198,7 @@ export default function Page() {
     const checkTokenValidity = async () => {
       try {
         const token = getCookie('token');
-        const response = await fetch('http://localhost:8989/api/teachers/auth/me',{
+        const response = await fetch('http://localhost:8989/api/teachers/auth/me', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -205,7 +206,7 @@ export default function Page() {
         });
         const data = await response.json();
         if (response.ok) {
-          router.push('/');
+          router.push('/home');
         }
       } catch (error) {
         console.error(error);
@@ -272,24 +273,22 @@ export default function Page() {
 
       console.log('Phản hồi từ máy chủ:', response);
       const { statusText } = response;
-      if (statusText == 'Conflict'){
+      if (statusText == 'Conflict') {
         alert('Tài khoản hoặc số điện thoại đã tồn tại')
       }
-      else if(statusText == 'Created'){
+      else if (statusText == 'Created') {
         alert('Đăng ký tài khoản thành công')
         setSignIn(true)
       }
-      else if(statusText == 'Unauthorized'){
+      else if (statusText == 'Unauthorized') {
         alert('Tài khoản hoặc mật khẩu không đúng')
       }
-      else if(statusText == 'OK'){
-      const responseData = await response.json();
-      setCookie('token',responseData.token,1);
-      alert('Đăng nhập thành công');
-      router.push('/home');
+      else if (statusText == 'OK') {
+        const responseData = await response.json();
+        setCookie('token', responseData.token, 1);
+        alert('Đăng nhập thành công');
+        router.push('/home');
 
-      // Save the token to the browser's localStorage
-      // localStorage.setItem('accessToken', responseData.token);
       }
     } catch (error) {
       console.error('Lỗi:', error);
@@ -367,31 +366,31 @@ export default function Page() {
           <Button type='submit'>Đăng nhập</Button>
         </Form>
       </SignInContainer>
-  
-        <OverlayContainer $signinIn={signIn}>
-          <Overlay $signinIn={signIn}>
-            <LeftOverlayPanel $signinIn={signIn}>
-              <Title>Chào mừng trở lại!</Title>
-              <Paragraph>
-                Để kết nối với chúng tôi, vui lòng đăng nhập bằng thông tin cá nhân của bạn
-              </Paragraph>
-              <GhostButton onClick={handleToggle}>
-                Đăng nhập
-              </GhostButton>
-            </LeftOverlayPanel>
-  
-            <RightOverlayPanel $signinIn={signIn}>
-              <Title>Xin chào, bạn!</Title>
-              <Paragraph>
-                Nhập thông tin cá nhân của bạn và bắt đầu cuộc hành trình cùng chúng tôi
-              </Paragraph>
-              <GhostButton onClick={handleToggle}>
-                Đăng ký
-              </GhostButton>
-            </RightOverlayPanel>
-          </Overlay>
-        </OverlayContainer>
-      </Container>
-    );
-  }
+
+      <OverlayContainer $signinIn={signIn}>
+        <Overlay $signinIn={signIn}>
+          <LeftOverlayPanel $signinIn={signIn}>
+            <Title>Chào mừng trở lại!</Title>
+            <Paragraph>
+              Để kết nối với chúng tôi, vui lòng đăng nhập bằng thông tin cá nhân của bạn
+            </Paragraph>
+            <GhostButton onClick={handleToggle}>
+              Đăng nhập
+            </GhostButton>
+          </LeftOverlayPanel>
+
+          <RightOverlayPanel $signinIn={signIn}>
+            <Title>Xin chào, bạn!</Title>
+            <Paragraph>
+              Nhập thông tin cá nhân của bạn và bắt đầu cuộc hành trình cùng chúng tôi
+            </Paragraph>
+            <GhostButton onClick={handleToggle}>
+              Đăng ký
+            </GhostButton>
+          </RightOverlayPanel>
+        </Overlay>
+      </OverlayContainer>
+    </Container>
+  );
+}
 

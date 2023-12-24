@@ -66,3 +66,28 @@
     background-color: #340ab4; /* Thay đổi màu nền khi di chuột qua */
   }
 
+  .content-container {
+    flex-grow: 1;
+    background-color: #ffffff;
+  }
+  .container {
+    display: flex;
+    flex-grow: 1;
+    padding: 20px;
+    overflow: hidden;
+  }
+  .leduoi{
+    max-height: calc(100vh - 100px); 
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6; 
+  }
+  
+  .table-container {
+    overflow: auto; 
+    max-height: calc(100vh - 120px); 
+  }
+  

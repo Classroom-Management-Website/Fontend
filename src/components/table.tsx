@@ -54,10 +54,14 @@ const Apptable = (props: TableClassrooms) => {
 
 
   return (
-    <>
+    <div className="container">
+      <div className="content-container">
+      <div className="header">
       <Button variant="primary" className="mb-3 custom-button" onClick={()=>setShowModelCreate(true)}>
         <FontAwesomeIcon icon={faPlus} /> Thêm lớp học mới
       </Button>
+      </div>
+      <div className="table-container">
       <Table striped bordered hover className="custom-table">
         <thead>
           <tr>
@@ -90,12 +94,14 @@ const Apptable = (props: TableClassrooms) => {
           ))}
         </tbody>
       </Table>
+      </div>
       <CreateClassrooms 
         showModelCreate={showModelCreate}
         setShowModelCreate={setShowModelCreate}
         customFunction={customFunction}
       />
-    </>
+    </div>
+    </div>
   );
 }
 
