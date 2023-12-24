@@ -38,7 +38,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({ onDateTimeChange }) => 
     setSelectedDay(selectedOption);
     if (selectedOption) {
       const formattedTime = selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const dateTimeString = `${(selectedOption as DayOption).label} at ${formattedTime}`;
+      const dateTimeString = `${(selectedOption as DayOption).label} lúc ${formattedTime}`;
       onDateTimeChange?.(dateTimeString);
     }
   };
@@ -46,11 +46,10 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({ onDateTimeChange }) => 
   return (
     <div>
       <div>
-        <label>Day: </label>
         <Select<DayOption, false> options={daysOfWeek} value={selectedDay} onChange={handleDayChange} />
       </div>
       <div>
-        <label>Time: </label>
+        <label>Thời gian bắt đầu </label>
         <DatePicker
           selected={selectedTime}
           onChange={handleTimeChange}

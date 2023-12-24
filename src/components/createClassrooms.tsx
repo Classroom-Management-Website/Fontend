@@ -41,7 +41,7 @@ function CreateClassrooms(props: IProps) {
           });
       
           if (!response.ok) {
-            throw new Error('Network response was not ok');
+            alert("Thời gian lớp học đang bị trùng")
           } else {
             handleCloseModal()
             alert('Thêm lớp học thành công');
