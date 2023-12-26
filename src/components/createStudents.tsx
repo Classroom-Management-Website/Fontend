@@ -72,7 +72,7 @@ function CreateStudents(props: IProps) {
         } else {
           handleCloseModal();
           customFunction();
-          alert('Thêm lớp học thành công');
+          alert('Thêm học sinh thành công');
         }
       } catch (error) {
         console.error('Error fetching classrooms:', error);

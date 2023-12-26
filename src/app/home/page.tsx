@@ -75,18 +75,13 @@ export default function Page() {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-
-      const data = await response.json();
-
-      if (data && data.classrooms) {
-        const classrooms = data.classrooms.map((classroom: ClassroomData) => ({
-          maLop: classroom.maLop,
-          tenLopHoc: classroom.tenLopHoc,
-          lichHoc: classroom.lichHoc,
-        }));
-        setClassroomsData(classrooms);
+      else {
+        const data = await response.json();
         console.log('Classrooms data:', data);
+        setClassroomsData(data);
       }
+
+
     } catch (error) {
       console.error('Error fetching data:', error);
       // Handle error as needed
@@ -150,7 +145,7 @@ export default function Page() {
           </div>
         )}
       </div>
-        {classroomsData && <Apptable blogs={classroomsData} customFunction={reloadTableData} />}
+      {classroomsData && <Apptable blogs={classroomsData} customFunction={reloadTableData} />}
     </div>
   );
 }

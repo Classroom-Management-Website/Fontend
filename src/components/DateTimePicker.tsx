@@ -78,10 +78,11 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({ onDateTimeChange }) => 
           <DatePicker
             selected={dayTimeMap[dayOption.value]}
             onChange={(date) => handleDayTimeChange(dayOption.value, date as Date)}
+            showTimeSelect
             showTimeSelectOnly
             timeIntervals={15}
             timeCaption="Time"
-            dateFormat="h:mm aa"
+            dateFormat="HH:mm"
           />
         </div>
       ))}
