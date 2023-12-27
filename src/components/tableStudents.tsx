@@ -13,6 +13,7 @@ interface TableStudents {
     tenHs: string;
     ngaySinh: string;
     soBuoiVang: number;
+    thongTinBuoiVang:string,
   }[];
   maLop: string;
   customFunction: () => void;
@@ -20,6 +21,7 @@ interface TableStudents {
 
 const AppStudents = (props: TableStudents) => {
   let thoiGianVang = '';
+  let danhSachMaHs = [];
   const [showModelCreate, setShowModelCreate] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [sortedBlogs, setSortedBlogs] = useState(props.blogs);
@@ -43,14 +45,41 @@ const AppStudents = (props: TableStudents) => {
     setSortedBlogs(sorted);
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
-  const handleAttendanceColumnClick = () => {
+  const handleAttendanceColumnClick = async () => {
     setShowAttendanceColumn(true);
-  
     const currentDate = new Date();
     const formattedDate = currentDate.toLocaleDateString();
     const formattedTime = currentDate.toLocaleTimeString();
-    thoiGianVang = `${formattedDate} ${formattedTime}`;
+    danhSachMaHs=props.blogs.map(blog => blog.maHs);
+    thoiGianVang = `${formattedDate} ${formattedTime} - 0`;
     console.log(thoiGianVang)
+    try{
+      const token = getCookie('token');
+      const apiUrl = `http://localhost:8989/api/students/diemdanh/${maLop}`;
+
+      // Tạo đối tượng formData
+      const formData = {
+        danhSachMaHs: danhSachMaHs,
+        thoiGianVang: thoiGianVang,
+      };
+
+      const response = await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      } else {
+        customFunction();
+      }
+    }catch(error){
+      console.error('Error fetching students:', error);
+    }
     setCurrentTime(`${formattedDate} ${formattedTime}`);
   };
   const handleDeleteStudent = async (maHs: number, tenHs: string) => {
