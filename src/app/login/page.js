@@ -286,7 +286,6 @@ export default function Page() {
       else if (statusText == 'OK') {
         const responseData = await response.json();
         setCookie('token', responseData.token, 1);
-        alert('Đăng nhập thành công');
         router.push('/home');
 
       }

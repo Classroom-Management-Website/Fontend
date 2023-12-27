@@ -8,6 +8,7 @@ import AppStudents from '@/components/tableStudents';
 interface ClassroomData {
   tenLopHoc: string;
   lichHoc: string;
+  thongTinDiemDanh: string;
 }
 
 const ViewClassrooms = ({ params }: { params: { id: string } }) => {
@@ -57,7 +58,7 @@ const ViewClassrooms = ({ params }: { params: { id: string } }) => {
               <h2>Thời gian: {classroomData.lichHoc}</h2>
             </div>
             <div style={{ overflowY: 'auto' }}>
-              <AppStudents blogs={studentsData} maLop={maLop} customFunction={reloadStudents} />
+              <AppStudents blogs={studentsData} maLop={maLop} thongTinDiemDanh={classroomData.thongTinDiemDanh} customFunction={reloadStudents} />
             </div>
           </div>
         )
