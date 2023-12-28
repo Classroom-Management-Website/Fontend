@@ -1,11 +1,14 @@
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faIdBadge, faEllipsisV, faPlus, faEdit, faEye, faTrash, faFilter, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faIdBadge, faEllipsisV, faPlus, faEdit, faEye, faTrash, faFilter, faCheckCircle, faDownload, faArrowRightToBracket, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import './tableStyles.css'; // CSS file import
 import { useState, useEffect } from 'react';
 import CreateStudents from './createStudents';
+import EditStudents from './editStudents';
 import { getCookie } from '@/getCookie/getCookie';
+import { exportStudents } from '@/excel/exportStudents';
+import { importStudent } from '@/excel/importStudents';
 
 interface TableStudents {
   blogs: {
@@ -15,19 +18,23 @@ interface TableStudents {
     soBuoiVang: number;
     thongTinBuoiVang: string,
   }[];
-  maLop: string;
+  maLop: number;
+  tenLopHoc: string;
   thongTinDiemDanh: string;
+  lichHoc: string;
   customFunction: () => void;
 }
 
 const AppStudents = (props: TableStudents) => {
   let thoiGianVang = '';
   let danhSachMaHs = [];
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [studentToEdit, setStudentToEdit] = useState<any>(null);  // Adjust the type as necessary
   const [showModelCreate, setShowModelCreate] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [sortedBlogs, setSortedBlogs] = useState(props.blogs);
-  const { maLop, customFunction, thongTinDiemDanh } = props;
-  const [currentTime, setCurrentTime] = useState<string>('');
+  const { maLop, tenLopHoc, lichHoc, customFunction, thongTinDiemDanh } = props;
+
 
   useEffect(() => {
     setSortedBlogs(props.blogs);
@@ -52,16 +59,16 @@ const AppStudents = (props: TableStudents) => {
     if (!thongTinBuoiVang) return [];
 
     try {
-      const attendanceArray = JSON.parse(thongTinBuoiVang) as string[];
-      return attendanceArray.map(info => {
-        const [date, count] = info.split('-');
-        return { date, count };
-      });
+      const attendanceArray = JSON.parse(thongTinBuoiVang) as { date: string; count: string }[];
+
+      return attendanceArray.map(({ date, count }) => ({ date, count }));
     } catch (error) {
       console.error("Error parsing attendance information", error);
       return [];
     }
   };
+
+
 
 
   // Sorting function
@@ -77,6 +84,65 @@ const AppStudents = (props: TableStudents) => {
     setSortedBlogs(sorted);
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
+  const handleAttendanceClickForZero = (blog: any, info: any) => {
+    handleAttendanceClick(blog, info, '1', 1);
+  };
+
+  const handleAttendanceClickForOne = (blog: any, info: any) => {
+    handleAttendanceClick(blog, info, '0', -1);
+  };
+
+  const handleAttendanceClick = async (blog: any, info: any, newCount: string, newSoBuoiVang: number) => {
+    const updatedBlogs = [...sortedBlogs];
+
+    const index = updatedBlogs.findIndex((item) => item.maHs === blog.maHs);
+
+    if (index !== -1) {
+      const updatedThongTinBuoiVang = JSON.parse(JSON.stringify(parseAttendanceInfo2(blog.thongTinBuoiVang)));
+      const matchingInfoIndex = updatedThongTinBuoiVang.findIndex((item: any) => item.date === info);
+
+      if (matchingInfoIndex !== -1) {
+        updatedThongTinBuoiVang[matchingInfoIndex].count = newCount;
+        updatedBlogs[index].soBuoiVang += newSoBuoiVang;
+
+        // Chuyển mảng thành chuỗi JSON
+        updatedBlogs[index].thongTinBuoiVang = JSON.stringify(updatedThongTinBuoiVang);
+
+        try {
+          const token = getCookie('token');
+          const apiUrl = 'http://localhost:8989/api/students/' + maLop;
+
+          // Tạo đối tượng formData
+          const formData = {
+            maHs: updatedBlogs.map(blog => blog.maHs)[index],
+            tenHs: updatedBlogs.map(blog => blog.tenHs)[index],
+            ngaySinh: updatedBlogs.map(blog => blog.ngaySinh)[index],
+            soBuoiVang: updatedBlogs.map(blog => blog.soBuoiVang)[index],
+            thongTinBuoiVang: updatedBlogs.map(blog => blog.thongTinBuoiVang)[index],
+          };
+
+          const response = await fetch(apiUrl, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          } else {
+            customFunction();
+          }
+        } catch (error) {
+          console.error('Error fetching classrooms:', error);
+        }
+      }
+    }
+  };
+
+
   const handleAttendanceColumnClick = async () => {
 
     const currentDate = new Date();
@@ -121,7 +187,8 @@ const AppStudents = (props: TableStudents) => {
       // Tạo đối tượng formData
       const formData = {
         danhSachMaHs: danhSachMaHs,
-        thoiGianVang: `${thoiGianVang}-0`,
+        thoiGianVang:
+          { date: thoiGianVang, count: '0' },
       };
 
       const response = await fetch(apiUrl, {
@@ -141,7 +208,7 @@ const AppStudents = (props: TableStudents) => {
     } catch (error) {
       console.error('Error fetching students:', error);
     }
-    setCurrentTime(`${formattedDate} ${formattedTime}`);
+
   };
   const handleDeleteStudent = async (maHs: number, tenHs: string) => {
     try {
@@ -175,12 +242,63 @@ const AppStudents = (props: TableStudents) => {
       alert('Đã có lỗi xảy ra');
     }
   };
+  const handleExport = () => {
+    const tenFile = `${tenLopHoc} ${lichHoc}`;
+    const exportData = sortedBlogs.map((student, index) => {
+      const studentData: any = {
+        'STT': index + 1,
+        'Tên Học Sinh': student.tenHs,
+        'Ngày Sinh': student.ngaySinh,
+        'Số Buổi Vắng': student.soBuoiVang,
+      };
+
+      // Add attendance information for each date
+      parseAttendanceInfo(thongTinDiemDanh).forEach((info) => {
+        const matchingInfo = parseAttendanceInfo2(student.thongTinBuoiVang).find(item => item.date === info);
+        studentData[`${info}`] = matchingInfo ? matchingInfo.count : '';
+      });
+
+      return studentData;
+    });
+
+    exportStudents(exportData, tenFile);
+  };
+  const handleImport = () => {
+    importStudent(maLop,customFunction);
+  };
+
+  const handleEditStudent = (student: any) => {
+    setStudentToEdit(student);
+    setShowEditModal(true);
+  };
+
+  const handleDownload = () => {
+    // Đường dẫn đến file trong thư mục excel
+    const filePath = '/form.xlsx';
+
+    // Tạo một thẻ <a> để tải file
+    const link = document.createElement('a');
+    link.href = filePath;
+    link.download = 'form.xlsx';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   return (
     <div className="container leduoi">
       <div className="content-container">
         <div className="header">
           <Button variant="primary" className="mb-3 custom-button" onClick={() => setShowModelCreate(true)}>
             <FontAwesomeIcon icon={faPlus} /> Thêm học sinh mới
+          </Button>
+          <Button variant="primary" className="mb-3 custom-button" onClick={handleImport}>
+            <FontAwesomeIcon icon={faArrowRightToBracket} /> Thêm học sinh bằng excel
+          </Button>
+          <Button variant="primary" className="mb-3 custom-button" onClick={handleDownload}>
+            <FontAwesomeIcon icon={faDownload} /> File mẫu thêm học sinh bằng excel
+          </Button>
+          <Button variant="primary" className="mb-3 custom-button" onClick={handleExport}>
+            <FontAwesomeIcon icon={faArrowRightFromBracket} /> Xuất danh sách học sinh
           </Button>
           <Button variant="primary" className="mb-3 custom-button" onClick={handleAttendanceColumnClick}>
             <FontAwesomeIcon icon={faIdBadge} /> Điểm danh
@@ -209,10 +327,7 @@ const AppStudents = (props: TableStudents) => {
                   <td>{blog.tenHs}</td>
                   <td>{blog.ngaySinh}</td>
                   {parseAttendanceInfo(thongTinDiemDanh).map((info, idx) => {
-                    const matchingInfo: {
-                      date: string;
-                      count: string;
-                    } | undefined = parseAttendanceInfo2(blog.thongTinBuoiVang).find(
+                    const matchingInfo = parseAttendanceInfo2(blog.thongTinBuoiVang).find(
                       (item) => item.date === info
                     );
                     return (
@@ -220,11 +335,11 @@ const AppStudents = (props: TableStudents) => {
                         key={idx}
                         onClick={() => {
                           if (matchingInfo) {
-                            if(matchingInfo.count == '0'){
-                              console.log(`Cell clicked with count: ${matchingInfo.date}-1 ${blog.thongTinBuoiVang} ${blog.maHs}`);
+                            if (matchingInfo.count == '0') {
+                              handleAttendanceClickForZero(blog, info);
                             }
-                            else if(matchingInfo.count == '1'){
-                              console.log(`Cell clicked with count: ${matchingInfo.date}-0 ${blog.thongTinBuoiVang} ${blog.maHs}`);
+                            else if (matchingInfo.count == '1') {
+                              handleAttendanceClickForOne(blog, info);
                             }
                           }
                         }}
@@ -236,9 +351,10 @@ const AppStudents = (props: TableStudents) => {
                   <td>{blog.soBuoiVang}</td>
                   <td>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <Button variant="warning" size="sm">
+                      <Button variant="warning" size="sm" onClick={() => handleEditStudent(blog)}>
                         <FontAwesomeIcon icon={faEdit} /> Chỉnh Sửa
                       </Button>
+
                       <Button variant="danger" size="sm" onClick={() => handleDeleteStudent(blog.maHs, blog.tenHs)}>
                         <FontAwesomeIcon icon={faTrash} /> Xóa
                       </Button>
@@ -255,6 +371,14 @@ const AppStudents = (props: TableStudents) => {
           maLop={maLop}
           customFunction={customFunction}
         />
+        <EditStudents
+          showEditModal={showEditModal}
+          setShowEditModal={setShowEditModal}
+          customFunction={customFunction}
+          maLop={maLop}
+          studentToEdit={studentToEdit}
+        />
+
       </div>
     </div>
   );

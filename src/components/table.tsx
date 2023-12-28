@@ -1,5 +1,6 @@
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
+import { Alert } from "reactstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV, faPlus, faEdit, faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
 import './tableStyles.css'; // CSS file import
@@ -7,8 +8,6 @@ import CreateClassrooms from './createClassrooms';
 import EditClassrooms from './editClassrooms';
 import { useState } from 'react';
 import { getCookie } from '@/getCookie/getCookie';
-import { useEffect } from 'react';
-import useSWR, { Fetcher } from 'swr'
 interface TableClassrooms {
   blogs: {
     maLop: number;
@@ -56,11 +55,11 @@ const Apptable = (props: TableClassrooms) => {
         customFunction();
         alert(`Xóa thành công lớp học có tên ${tenLopHoc}.`);
       } else {
-        alert('Đã có lỗi xảy ra');
+        throw new Error ('Đã có lỗi xảy ra');
       }
     } catch (error) {
-      console.error('Error while deleting classroom:', error);
-      alert('Đã có lỗi xảy ra');
+      // console.error('Error while deleting classroom:', error);
+      throw new Error ('Đã có lỗi xảy ra');
     }
   };
 
@@ -68,6 +67,7 @@ const Apptable = (props: TableClassrooms) => {
 
 
   return (
+
     <div className="container">
       <div className="content-container">
         <div className="header">
@@ -109,23 +109,26 @@ const Apptable = (props: TableClassrooms) => {
             </tbody>
           </Table>
         </div>
-        <CreateClassrooms
-          showModelCreate={showModelCreate}
-          setShowModelCreate={setShowModelCreate}
-          customFunction={customFunction}
-        />
-        {
-          currentClassroom && (
-            <EditClassrooms
-              show={showEditModal}
-              onHide={() => setShowEditModal(false)}
-              classroom={currentClassroom}
-              refreshData={customFunction}
-            />
-          )
-        }
+
       </div>
+      <CreateClassrooms
+        showModelCreate={showModelCreate}
+        setShowModelCreate={setShowModelCreate}
+        customFunction={customFunction}
+      />
+      {
+        currentClassroom && (
+          <EditClassrooms
+            show={showEditModal}
+            onHide={() => setShowEditModal(false)}
+            classroom={currentClassroom}
+            refreshData={customFunction}
+          />
+        )
+      }
     </div>
+
+
   );
 }
 

@@ -11,7 +11,7 @@ interface ClassroomData {
   thongTinDiemDanh: string;
 }
 
-const ViewClassrooms = ({ params }: { params: { id: string } }) => {
+const ViewClassrooms = ({ params }: { params: { id: number } }) => {
 
   const maLop = params.id
   const [studentsData, setStudentsData] = useState(null);
@@ -58,7 +58,7 @@ const ViewClassrooms = ({ params }: { params: { id: string } }) => {
               <h2>Thời gian: {classroomData.lichHoc}</h2>
             </div>
             <div style={{ overflowY: 'auto' }}>
-              <AppStudents blogs={studentsData} maLop={maLop} thongTinDiemDanh={classroomData.thongTinDiemDanh} customFunction={reloadStudents} />
+              <AppStudents blogs={studentsData} maLop={maLop} tenLopHoc={classroomData.tenLopHoc} lichHoc={classroomData.lichHoc} thongTinDiemDanh={classroomData.thongTinDiemDanh} customFunction={reloadStudents} />
             </div>
           </div>
         )

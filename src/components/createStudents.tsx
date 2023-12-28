@@ -6,12 +6,12 @@ import Modal from 'react-bootstrap/Modal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getCookie } from '@/getCookie/getCookie';
-import ViewClassrooms from '@/app/home/[id]/page';
+
 interface IProps {
   showModelCreate: boolean;
   setShowModelCreate: (value: boolean) => void;
   customFunction: () => void;
-  maLop: string;
+  maLop: number;
 }
 
 function CreateStudents(props: IProps) {
@@ -80,7 +80,7 @@ function CreateStudents(props: IProps) {
 
     }
     else {
-      alert("Vui lòng điền tên học sinh")
+      throw new Error ("Vui lòng điền tên học sinh")
     }
   }
 

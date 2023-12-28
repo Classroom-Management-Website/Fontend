@@ -18,19 +18,13 @@ const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassrooms
   const [tenLopHoc, setTenLopHoc] = useState('');
   const [lichHoc, setLichHoc] = useState('');
 
-  const [initialClassroom, setInitialClassroom] = useState({
-    tenLopHoc: '',
-    lichHoc: '',
-  });
+
 
   useEffect(() => {
     if (classroom) {
       setTenLopHoc(classroom.tenLopHoc);
       setLichHoc(classroom.lichHoc);
-      setInitialClassroom({
-        tenLopHoc: classroom.tenLopHoc,
-        lichHoc: classroom.lichHoc,
-      });
+
     }
   }, [classroom]);
 
@@ -59,7 +53,7 @@ const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassrooms
 
       if (!response.ok) {
         console.log(response)
-        alert('Đã có lỗi xảy ra');
+        throw new Error ('Đã có lỗi xảy ra');
       } else {
         onHide();
         refreshData();
@@ -67,17 +61,12 @@ const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassrooms
       }
     } catch (error) {
       console.error('Error updating classroom:', error);
-      alert('Đã có lỗi xảy ra');
+      throw new Error ('Đã có lỗi xảy ra');
     }
   };
-  const handleModalClose = () => {
-    console.log("dong")
-    setTenLopHoc(initialClassroom.tenLopHoc);
-    setLichHoc(initialClassroom.lichHoc);
-    onHide();
-  };
+
   return (
-    <Modal show={show} onHide={handleModalClose} size='lg'>
+    <Modal show={show} size='lg'>
       <Modal.Header closeButton>
         <Modal.Title>Chỉnh sửa lớp học</Modal.Title>
       </Modal.Header>
@@ -102,7 +91,7 @@ const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassrooms
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary"  onClick={handleModalClose}>Đóng</Button>
+        <Button variant="secondary"  onClick={onHide}>Đóng</Button>
         <Button variant="primary" onClick={handleSubmit}>Cập nhật</Button>
       </Modal.Footer>
     </Modal>

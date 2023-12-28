@@ -52,7 +52,7 @@ function CreateClassrooms(props: IProps) {
         }
       }
       else{
-        alert('Vui lòng điền đầy đủ thông tin')
+        throw new Error ('Vui lòng điền đầy đủ thông tin')
       }
     };
     
