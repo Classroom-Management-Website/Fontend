@@ -1,13 +1,13 @@
-import Table from 'react-bootstrap/Table';
-import Button from 'react-bootstrap/Button';
-import { Alert } from "reactstrap";
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV, faPlus, faEdit, faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
-import './tableStyles.css'; // CSS file import
 import CreateClassrooms from './createClassrooms';
 import EditClassrooms from './editClassrooms';
 import { useState } from 'react';
 import { getCookie } from '@/getCookie/getCookie';
+import { useRouter } from 'next/navigation';
+import { Button,Table, Container, Col, Row, Navbar, Nav } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 interface TableClassrooms {
   blogs: {
     maLop: number;
@@ -23,6 +23,7 @@ interface Classroom {
 }
 
 const Apptable = (props: TableClassrooms) => {
+  const router = useRouter();
   const { blogs, customFunction } = props;
   const [showModelCreate, setShowModelCreate] = useState<boolean>(false)
   // Inside the Apptable component
@@ -62,41 +63,42 @@ const Apptable = (props: TableClassrooms) => {
       throw new Error ('Đã có lỗi xảy ra');
     }
   };
-
+  const handleViewStudents =(maLop:number)=>{
+    router.push(`/home/${maLop}`)
+  };
 
 
 
   return (
-
-    <div className="container">
-      <div className="content-container">
-        <div className="header">
-          <Button variant="primary" className="mb-3 custom-button" onClick={() => setShowModelCreate(true)}>
+    <>
+      <>
+        <div>
+          <Button variant="primary" className="mb-3" onClick={() => setShowModelCreate(true)}>
             <FontAwesomeIcon icon={faPlus} /> Thêm lớp học mới
           </Button>
         </div>
-        <div className="table-container">
-          <Table striped bordered hover className="custom-table">
+        <Container>
+          <Table striped bordered hover>
             <thead>
               <tr>
-                <th>STT</th>
-                <th>Tên Lớp</th>
-                <th>Lịch Học</th>
-                <th>Hành Động</th>
+                <th><div style={{ display: 'flex', justifyContent: 'center' }}>STT</div></th>
+                <th><div style={{ display: 'flex', justifyContent: 'center' }}>Tên Lớp</div></th>
+                <th><div style={{ display: 'flex', justifyContent: 'center' }}>Lịch Học</div></th>
+                <th><div style={{ display: 'flex', justifyContent: 'center' }}>Hành Động</div></th>
               </tr>
             </thead>
             <tbody>
               {blogs.map((blog, index) => (
                 <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{blog.tenLopHoc}</td>
-                  <td>{blog.lichHoc}</td>
+                  <td><div style={{ display: 'flex', justifyContent: 'center' }}>{index + 1}</div></td>
+                  <td><div style={{ display: 'flex', justifyContent: 'center' }}>{blog.tenLopHoc}</div></td>
+                  <td><div style={{ display: 'flex', justifyContent: 'center' }}>{blog.lichHoc}</div></td>
                   <td>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                       <Button variant="warning" size="sm" onClick={() => handleEditClassroom(blog)}>
                         <FontAwesomeIcon icon={faEdit} /> Chỉnh Sửa
                       </Button>
-                      <Button variant="info" size="sm" href={`/home/${blog.maLop}`}>
+                      <Button variant="info" size="sm" onClick={() => handleViewStudents(blog.maLop)}>
                         <FontAwesomeIcon icon={faEye} /> Xem
                       </Button>
                       <Button variant="danger" size="sm" onClick={() => handleDeleteClassrooms(blog.maLop, blog.tenLopHoc)}>
@@ -108,9 +110,9 @@ const Apptable = (props: TableClassrooms) => {
               ))}
             </tbody>
           </Table>
-        </div>
+        </Container>
 
-      </div>
+      </>
       <CreateClassrooms
         showModelCreate={showModelCreate}
         setShowModelCreate={setShowModelCreate}
@@ -126,7 +128,7 @@ const Apptable = (props: TableClassrooms) => {
           />
         )
       }
-    </div>
+    </>
 
 
   );

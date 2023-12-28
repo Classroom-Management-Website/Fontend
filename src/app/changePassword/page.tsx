@@ -5,14 +5,15 @@ import Form from 'react-bootstrap/Form';
 import { getCookie } from '@/getCookie/getCookie';
 import { useRouter } from 'next/navigation'
 import deleteCookie from '@/getCookie/deleteCookie';
+import 'bootstrap/dist/css/bootstrap.min.css';
 function BasicExample() {
   const router = useRouter();
-    const [oldPassword, setOldPassword] = useState<string>('');
-    const [newPassword, setNewPassword] = useState<string>('');
-    const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-  
-    const handleSubmit = async (event: FormEvent) => {
+  const [oldPassword, setOldPassword] = useState<string>('');
+  const [newPassword, setNewPassword] = useState<string>('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (newPassword !== confirmNewPassword) {
       alert("Mật khẩu mới và xác nhận mật khẩu không khớp!");
@@ -21,7 +22,7 @@ function BasicExample() {
 
     // Gửi thông tin mật khẩu đến API
     try {
-        
+
       const token = getCookie('token');
       const response = await fetch('http://localhost:8989/api/teachers/changePassword', {
         method: 'PUT',
@@ -42,47 +43,53 @@ function BasicExample() {
       alert("Mật khẩu cũ không đúng")
     }
   };
-
+  const handleCancel = () => {
+    router.push("/")
+  };
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form>
       <Form.Group className="mb-3" controlId="formBasicOldPassword">
         <Form.Label>Nhập mật khẩu cũ</Form.Label>
-        <Form.Control 
-          type={showPassword ? "text" : "password"} 
-          placeholder="Nhập mật khẩu cũ" 
-          value={oldPassword} 
+        <Form.Control
+          type={showPassword ? "text" : "password"}
+          placeholder="Nhập mật khẩu cũ"
+          value={oldPassword}
           onChange={(e) => setOldPassword(e.target.value)} />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicNewPassword">
         <Form.Label>Nhập mật khẩu mới</Form.Label>
-        <Form.Control 
-          type={showPassword ? "text" : "password"} 
-          placeholder="Nhập mật khẩu mới" 
-          value={newPassword} 
+        <Form.Control
+          type={showPassword ? "text" : "password"}
+          placeholder="Nhập mật khẩu mới"
+          value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)} />
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicConfirmNewPassword">
         <Form.Label>Nhập lại mật khẩu mới</Form.Label>
-        <Form.Control 
-          type={showPassword ? "text" : "password"} 
-          placeholder="Nhập lại mật khẩu mới" 
-          value={confirmNewPassword} 
+        <Form.Control
+          type={showPassword ? "text" : "password"}
+          placeholder="Nhập lại mật khẩu mới"
+          value={confirmNewPassword}
           onChange={(e) => setConfirmNewPassword(e.target.value)} />
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Check 
-          type="checkbox" 
-          label="Hiển thị mật khẩu" 
-          checked={showPassword} 
+        <Form.Check
+          type="checkbox"
+          label="Hiển thị mật khẩu"
+          checked={showPassword}
           onChange={(e) => setShowPassword(e.target.checked)} />
       </Form.Group>
-
-      <Button variant="primary" type="submit">
-        Xác nhận
-      </Button>
+      <>
+        <Button variant="danger" onClick={handleCancel}>
+          Hủy
+        </Button>
+        <Button variant="primary" onClick={handleSubmit}>
+          Xác nhận
+        </Button>
+      </>
     </Form>
   );
 }

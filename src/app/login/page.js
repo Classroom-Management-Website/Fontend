@@ -1,11 +1,19 @@
 "use client"
-import './page.css'
 import React, { useState } from "react";
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation'
 
-
+const Body = styled.div`
+background: #f6f5f7;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+font-family: "Montserrat", sans-serif;
+height: 100vh;
+margin: -20px 0 50px;
+`;
 const Container = styled.div`
  background-color: #fff;
  border-radius: 10px;
@@ -59,15 +67,17 @@ const Form = styled.form`
  `;
 
 const Title = styled.h1`
+font-size: 30px;
  font-weight: bold;
  margin: 0;
  `;
 
 const Input = styled.input`
+font-size: 14px;
  background-color: #eee;
  border: none;
- padding: 12px 15px;
- margin: 8px 0;
+ padding: 10px 15px;
+ margin: 5px 0;
  width: 100%;
  color: black;
  `;
@@ -206,7 +216,7 @@ export default function Page() {
         });
         const data = await response.json();
         if (response.ok) {
-          router.push('/home');
+          router.push('/');
         }
       } catch (error) {
         console.error(error);
@@ -286,7 +296,8 @@ export default function Page() {
       else if (statusText == 'OK') {
         const responseData = await response.json();
         setCookie('token', responseData.token, 1);
-        router.push('/home');
+        router.push('/')
+
 
       }
     } catch (error) {
@@ -295,6 +306,7 @@ export default function Page() {
   };
 
   return (
+    <Body>
     <Container>
       <SignUpContainer $signinIn={signIn}>
         <Form onSubmit={handleFormSubmit}>
@@ -362,7 +374,7 @@ export default function Page() {
           />
 
           <Anchor href='#'>Quên mật khẩu?</Anchor>
-          <Button type='submit'>Đăng nhập</Button>
+          <Button type='submit' >Đăng nhập</Button>
         </Form>
       </SignInContainer>
 
@@ -390,6 +402,7 @@ export default function Page() {
         </Overlay>
       </OverlayContainer>
     </Container>
+    </Body>
   );
 }
 

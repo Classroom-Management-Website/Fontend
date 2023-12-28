@@ -1,15 +1,14 @@
 import Table from 'react-bootstrap/Table';
-import Button from 'react-bootstrap/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faIdBadge, faEllipsisV, faPlus, faEdit, faEye, faTrash, faFilter, faCheckCircle, faDownload, faArrowRightToBracket, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
-import './tableStyles.css'; // CSS file import
 import { useState, useEffect } from 'react';
 import CreateStudents from './createStudents';
 import EditStudents from './editStudents';
 import { getCookie } from '@/getCookie/getCookie';
 import { exportStudents } from '@/excel/exportStudents';
 import { importStudent } from '@/excel/importStudents';
-
+import { Button, Container, Col, Row, Navbar, Nav } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 interface TableStudents {
   blogs: {
     maHs: number;
@@ -285,47 +284,54 @@ const AppStudents = (props: TableStudents) => {
     document.body.removeChild(link);
   };
   return (
-    <div className="container leduoi">
-      <div className="content-container">
-        <div className="header">
-          <Button variant="primary" className="mb-3 custom-button" onClick={() => setShowModelCreate(true)}>
+    <>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+          <Button variant="primary" className="mb-3" size="sm" onClick={() => setShowModelCreate(true)}>
             <FontAwesomeIcon icon={faPlus} /> Thêm học sinh mới
-          </Button>
-          <Button variant="primary" className="mb-3 custom-button" onClick={handleImport}>
+          </Button>{' '}
+          <Button variant="primary" className="mb-3" size="sm" onClick={handleImport}>
             <FontAwesomeIcon icon={faArrowRightToBracket} /> Thêm học sinh bằng excel
-          </Button>
-          <Button variant="primary" className="mb-3 custom-button" onClick={handleDownload}>
-            <FontAwesomeIcon icon={faDownload} /> File mẫu thêm học sinh bằng excel
-          </Button>
-          <Button variant="primary" className="mb-3 custom-button" onClick={handleExport}>
+          </Button>{' '}
+          <Button variant="primary" className="mb-3" size="sm" onClick={handleDownload}>
+            <FontAwesomeIcon icon={faDownload} /> File excel mẫu
+          </Button>{' '}
+          <Button variant="primary" className="mb-3" size="sm" onClick={handleExport}>
             <FontAwesomeIcon icon={faArrowRightFromBracket} /> Xuất danh sách học sinh
-          </Button>
-          <Button variant="primary" className="mb-3 custom-button" onClick={handleAttendanceColumnClick}>
+          </Button>{' '}
+          <Button variant="primary" className="mb-3" size="sm" onClick={handleAttendanceColumnClick}>
             <FontAwesomeIcon icon={faIdBadge} /> Điểm danh
           </Button>
         </div>
-        <div className="table-container">
-          <Table striped bordered hover className="custom-table">
-            <thead>
+        <Container>
+          <Table striped bordered hover >
+            <thead >
               <tr>
-                <th>STT</th>
-                <th style={{ cursor: 'pointer' }} onClick={sortByName}>
-                  Tên Học Sinh <FontAwesomeIcon icon={faFilter} />
+                <th>
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>STT</div>
+                  </th>
+                <th onClick={sortByName}>
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>Tên Học Sinh <FontAwesomeIcon icon={faFilter} /></div>
                 </th>
-                <th>Ngày Sinh</th>
+                <th>
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>Ngày </div>
+                  
+                  </th>
                 {parseAttendanceInfo(thongTinDiemDanh).map((info, index) => (
-                  <th key={index}>{info}</th>
+                  <th key={index}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>{info}</div>
+                    
+                    </th>
                 ))}
-                <th>Số Buổi Vắng</th>
-                <th>Hành động</th>
+                <th><div style={{ display: 'flex', justifyContent: 'center' }}>Số Buổi Vắng</div> </th>
+                <th><div style={{ display: 'flex', justifyContent: 'center' }}>Hành động</div></th>
               </tr>
             </thead>
             <tbody>
               {sortedBlogs.map((blog, index) => (
                 <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{blog.tenHs}</td>
-                  <td>{blog.ngaySinh}</td>
+                  <td><div style={{ display: 'flex', justifyContent: 'center' }}>{index + 1}</div></td>
+                  <td><div style={{ display: 'flex', justifyContent: 'center' }}>{blog.tenHs}</div> </td>
+                  <td><div style={{ display: 'flex', justifyContent: 'center' }}>{blog.ngaySinh}</div></td>
                   {parseAttendanceInfo(thongTinDiemDanh).map((info, idx) => {
                     const matchingInfo = parseAttendanceInfo2(blog.thongTinBuoiVang).find(
                       (item) => item.date === info
@@ -344,11 +350,12 @@ const AppStudents = (props: TableStudents) => {
                           }
                         }}
                       >
-                        {matchingInfo ? matchingInfo.count : ''}
+                        <div style={{ display: 'flex', justifyContent: 'center' }}>{matchingInfo ? matchingInfo.count : ''}</div>
+                        
                       </td>
                     );
                   })}
-                  <td>{blog.soBuoiVang}</td>
+                  <td><div style={{ display: 'flex', justifyContent: 'center' }}>{blog.soBuoiVang}</div> </td>
                   <td>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                       <Button variant="warning" size="sm" onClick={() => handleEditStudent(blog)}>
@@ -364,7 +371,7 @@ const AppStudents = (props: TableStudents) => {
               ))}
             </tbody>
           </Table>
-        </div>
+        </Container>
         <CreateStudents
           showModelCreate={showModelCreate}
           setShowModelCreate={setShowModelCreate}
@@ -378,9 +385,7 @@ const AppStudents = (props: TableStudents) => {
           maLop={maLop}
           studentToEdit={studentToEdit}
         />
-
-      </div>
-    </div>
+    </>
   );
 }
 

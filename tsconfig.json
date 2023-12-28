@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "sourceMap": false,
     "types": ["react", "react-bootstrap"],
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],

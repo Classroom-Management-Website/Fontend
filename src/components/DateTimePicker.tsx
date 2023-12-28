@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 interface DayOption {
   value: string;
   label: string;

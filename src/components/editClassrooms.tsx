@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import DateTimePicker from './editDateTimePicker';
 import { getCookie } from '@/getCookie/getCookie';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 interface EditClassroomsProps {
   show: boolean;
   onHide: () => void;
@@ -66,7 +66,12 @@ const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassrooms
   };
 
   return (
-    <Modal show={show} size='lg'>
+    <Modal 
+    show={show}
+    onHide={onHide}
+    backdrop="static"
+    keyboard={false}
+    >
       <Modal.Header closeButton>
         <Modal.Title>Chỉnh sửa lớp học</Modal.Title>
       </Modal.Header>

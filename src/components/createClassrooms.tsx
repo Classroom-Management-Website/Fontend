@@ -1,4 +1,4 @@
-"use client"
+
 import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
@@ -6,6 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import DateTimePicker from './DateTimePicker';
 import { getCookie } from '@/getCookie/getCookie';
 import { useRouter } from 'next/navigation'
+import 'bootstrap/dist/css/bootstrap.min.css';
 interface IProps{
     showModelCreate: boolean;
     setShowModelCreate: (value: boolean) => void;
@@ -70,12 +71,12 @@ function CreateClassrooms(props: IProps) {
     <>
       <Modal
         show={showModelCreate}
-        onHide={()=>handleCloseModal}
+        onHide={handleCloseModal}
         backdrop="static"
         keyboard={false}
         size = 'lg'
       >
-        <Modal.Header closeButton>
+        <Modal.Header closeButton >
           <Modal.Title>Thêm lớp học mới</Modal.Title>
         </Modal.Header>
         <Modal.Body>

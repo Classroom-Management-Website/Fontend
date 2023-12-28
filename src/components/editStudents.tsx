@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getCookie } from '@/getCookie/getCookie';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 interface EditStudentsProps {
   showEditModal: boolean;
   setShowEditModal: (value: boolean) => void;
@@ -107,7 +107,7 @@ function EditStudents(props: EditStudentsProps) {
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Ngày Sinh</Form.Label>
+            <Form.Label>Ngày Sinh:</Form.Label>
             <DatePicker
               selected={birthday}
               onChange={(date) => {

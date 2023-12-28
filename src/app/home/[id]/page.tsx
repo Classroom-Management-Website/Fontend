@@ -1,9 +1,10 @@
 "use client"
 import { useEffect } from 'react';
 import React, { ChangeEvent, useState } from 'react';
-import useSWR, { Fetcher } from 'swr'
+import { Button, Container, Col, Row, Navbar, Nav } from 'react-bootstrap';
 import { getCookie } from '@/getCookie/getCookie';
 import AppStudents from '@/components/tableStudents';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface ClassroomData {
   tenLopHoc: string;
@@ -47,24 +48,25 @@ const ViewClassrooms = ({ params }: { params: { id: number } }) => {
     reloadStudents();
   }, []);
   return (
-    <div>
+    <>
       {error ? (
         <p>Đường dẫn không hợp lệ.</p>
       ) : (
         studentsData && classroomData && (
-          <div>
-            <div style={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: '#f0f0f0' }}>
+          <>
+            <Container>
               <h1>Lớp học: {classroomData.tenLopHoc}</h1>
               <h2>Thời gian: {classroomData.lichHoc}</h2>
-            </div>
-            <div style={{ overflowY: 'auto' }}>
-              <AppStudents blogs={studentsData} maLop={maLop} tenLopHoc={classroomData.tenLopHoc} lichHoc={classroomData.lichHoc} thongTinDiemDanh={classroomData.thongTinDiemDanh} customFunction={reloadStudents} />
-            </div>
-          </div>
+              
+            </Container>
+            <Container>
+            <AppStudents blogs={studentsData} maLop={maLop} tenLopHoc={classroomData.tenLopHoc} lichHoc={classroomData.lichHoc} thongTinDiemDanh={classroomData.thongTinDiemDanh} customFunction={reloadStudents} />
+            </Container>
+          </>
         )
 
       )}
-    </div>
+    </>
   );
 }
 

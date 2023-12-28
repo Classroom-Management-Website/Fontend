@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 interface DayOption {
   value: string;
   label: string;
