@@ -120,7 +120,7 @@ const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassrooms
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Lịch học</Form.Label>
+            <Form.Label>Thời gian</Form.Label>
             <DateTimePicker 
               initialDateTime={lichHoc} 
               onDateTimeChange={setLichHoc} 

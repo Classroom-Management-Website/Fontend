@@ -26,7 +26,6 @@ const Apptable = (props: TableClassrooms) => {
   const router = useRouter();
   const { blogs, customFunction } = props;
   const [showModelCreate, setShowModelCreate] = useState<boolean>(false)
-  // Inside the Apptable component
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentClassroom, setCurrentClassroom] = useState<Classroom | null>(null);
   const [messageApi, contextHolder] = message.useMessage();
@@ -42,6 +41,21 @@ const Apptable = (props: TableClassrooms) => {
       messageApi.open({
         key,
         type:'success',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
+  const openMessageError = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'error',
         content: text,
         duration: 2,
       });
@@ -73,11 +87,11 @@ const Apptable = (props: TableClassrooms) => {
         customFunction();
         openMessageSuccess(`Xóa thành công lớp học: ${tenLopHoc}`);
       } else {
-        throw new Error ('Đã có lỗi xảy ra');
+        openMessageError('Đã có lỗi xảy ra');
       }
     } catch (error) {
       // console.error('Error while deleting classroom:', error);
-      throw new Error ('Đã có lỗi xảy ra');
+      openMessageError('Đã có lỗi xảy ra');
     }
   };
   const handleViewStudents =(maLop:number)=>{
@@ -101,7 +115,7 @@ const Apptable = (props: TableClassrooms) => {
               <tr>
                 <th><div style={{ display: 'flex', justifyContent: 'center' }}>STT</div></th>
                 <th><div style={{ display: 'flex', justifyContent: 'center' }}>Tên Lớp</div></th>
-                <th><div style={{ display: 'flex', justifyContent: 'center' }}>Lịch Học</div></th>
+                <th><div style={{ display: 'flex', justifyContent: 'center' }}>Thời gian</div></th>
                 <th><div style={{ display: 'flex', justifyContent: 'center' }}>Hành Động</div></th>
               </tr>
             </thead>

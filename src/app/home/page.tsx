@@ -128,6 +128,9 @@ const App: React.FC = () => {
     else if (key == 2) {
       window.location.href = 'https://me.momo.vn/unghotacgia';
     }
+    else{
+      window.location.href ='https://youtu.be/4q6Oy21gGl4';
+    };
 
   };
   return (
