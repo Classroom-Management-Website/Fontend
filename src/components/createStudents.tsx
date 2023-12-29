@@ -1,4 +1,4 @@
-
+import { message } from 'antd';
 import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -20,6 +20,39 @@ function CreateStudents(props: IProps) {
   const [tenHs, setTenHs] = useState<string>('');
   const [ngaySinh, setNgaySinh] = useState<string>('')
   const [soBuoiVang, setSoBuoiVang] = useState<number | string>('');
+  const [messageApi, contextHolder] = message.useMessage();
+  const key = 'updatable';
+
+  const openMessageSuccess = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'success',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
+  const openMessageError = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'error',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
   const handleCloseModal = () => {
     setTenHs('')
     setBirthday(null);
@@ -68,11 +101,11 @@ function CreateStudents(props: IProps) {
         });
 
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          openMessageError('Network response was not ok');
         } else {
           handleCloseModal();
           customFunction();
-          alert('Thêm học sinh thành công');
+          openMessageSuccess('Thêm học sinh thành công');
         }
       } catch (error) {
         console.error('Error fetching classrooms:', error);
@@ -80,12 +113,12 @@ function CreateStudents(props: IProps) {
 
     }
     else {
-      throw new Error ("Vui lòng điền tên học sinh")
+      openMessageError ("Vui lòng điền tên học sinh")
     }
   }
 
   return (
-
+<>{contextHolder}
     <Modal
       show={showModelCreate}
       onHide={handleCloseModal}
@@ -127,7 +160,7 @@ function CreateStudents(props: IProps) {
             <Form.Label>Số Buổi Vắng</Form.Label>
             <Form.Control
               type="number"  // Sử dụng type="number"
-              placeholder="...."
+              placeholder="0"
               value={soBuoiVang}
               onChange={handleInputChange}
             />
@@ -141,6 +174,7 @@ function CreateStudents(props: IProps) {
         <Button variant="primary" onClick={() => handleSubmit()}>Lưu</Button>
       </Modal.Footer>
     </Modal>
+    </>
   );
 }
 

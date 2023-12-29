@@ -1,4 +1,4 @@
-
+import { message } from 'antd';
 import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
@@ -18,7 +18,39 @@ function CreateClassrooms(props: IProps) {
     const {showModelCreate,setShowModelCreate,customFunction} = props;
     const [tenLopHoc,setTenLopHoc] = useState<string>('');
     const [lichHoc,setLichHoc] = useState<string>('');
-
+    const [messageApi, contextHolder] = message.useMessage();
+    const key = 'updatable';
+  
+    const openMessageSuccess = (text:string) => {
+      messageApi.open({
+        key,
+        type: 'loading',
+        content: 'Loading...',
+      });
+      setTimeout(() => {
+        messageApi.open({
+          key,
+          type:'success',
+          content: text,
+          duration: 2,
+        });
+      }, 500);
+    };
+    const openMessageError = (text:string) => {
+      messageApi.open({
+        key,
+        type: 'loading',
+        content: 'Loading...',
+      });
+      setTimeout(() => {
+        messageApi.open({
+          key,
+          type:'error',
+          content: text,
+          duration: 2,
+        });
+      }, 500);
+    };
     const handleSubmit = async () => {
       if(tenLopHoc && lichHoc){
         try {
@@ -42,25 +74,24 @@ function CreateClassrooms(props: IProps) {
           });
       
           if (!response.ok) {
-            alert("Thời gian lớp học đang bị trùng")
+            openMessageError("Thời gian lớp học đang bị trùng")
           } else {
             handleCloseModal()
-            alert('Thêm lớp học thành công');
+            openMessageSuccess('Thêm lớp học thành công');
             customFunction();
           }
         } catch (error) {
-          console.error('Error fetching classrooms:', error);
+          openMessageError('Error fetching classrooms');
         }
       }
       else{
-        throw new Error ('Vui lòng điền đầy đủ thông tin')
+        openMessageError('Vui lòng điền đầy đủ thông tin')
       }
     };
     
     const handleDateTimeChange = (selectedDateTimeString: string) => {
       setLichHoc(selectedDateTimeString);
-      // Xử lý giá trị đã chọn ở đây, ví dụ: log ra console
-      // console.log('Selected Day:', selectedDateTimeString);
+
     };
     const handleCloseModal = () =>{
       setTenLopHoc('');
@@ -68,7 +99,7 @@ function CreateClassrooms(props: IProps) {
       setShowModelCreate(false)
     }
   return (
-    <>
+    <>{contextHolder}
       <Modal
         show={showModelCreate}
         onHide={handleCloseModal}

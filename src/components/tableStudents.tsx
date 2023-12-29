@@ -8,6 +8,7 @@ import { getCookie } from '@/getCookie/getCookie';
 import { exportStudents } from '@/excel/exportStudents';
 import { importStudent } from '@/excel/importStudents';
 import { Button, Container, Col, Row, Navbar, Nav } from 'react-bootstrap';
+import { message } from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
 interface TableStudents {
   blogs: {
@@ -25,16 +26,47 @@ interface TableStudents {
 }
 
 const AppStudents = (props: TableStudents) => {
-  let thoiGianVang = '';
-  let danhSachMaHs = [];
+
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [studentToEdit, setStudentToEdit] = useState<any>(null);  // Adjust the type as necessary
   const [showModelCreate, setShowModelCreate] = useState<boolean>(false);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [sortedBlogs, setSortedBlogs] = useState(props.blogs);
   const { maLop, tenLopHoc, lichHoc, customFunction, thongTinDiemDanh } = props;
+  const [messageApi, contextHolder] = message.useMessage();
 
+  const key = 'updatable';
 
+  const openMessageSuccess = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'success',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
+  const openMessageError = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'error',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
   useEffect(() => {
     setSortedBlogs(props.blogs);
   }, [props.blogs]);
@@ -70,19 +102,39 @@ const AppStudents = (props: TableStudents) => {
 
 
 
-  // Sorting function
-  const sortByName = () => {
-    const sorted = [...sortedBlogs].sort((a, b) => {
-      if (sortOrder === 'asc') {
-        return a.tenHs.localeCompare(b.tenHs);
-      } else {
-        return b.tenHs.localeCompare(a.tenHs);
-      }
-    });
+// Hàm lấy tên từ chuỗi tên đầy đủ
+const getFirstName = (fullName: string) => {
+  const parts = fullName.trim().split(' ');
+  return parts.length > 0 ? parts[parts.length - 1] : '';
+};
 
-    setSortedBlogs(sorted);
-    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-  };
+// Hàm chuẩn hóa tên tiếng Việt
+const normalizeVietnameseName = (name: string) => {
+  return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+};
+
+// Hàm so sánh tên tiếng Việt
+const compareVietnameseNames = (a: string, b: string, sortOrder: string) => {
+  const nameA = normalizeVietnameseName(getFirstName(a));
+  const nameB = normalizeVietnameseName(getFirstName(b));
+
+  if (sortOrder === 'asc') {
+    return nameA.localeCompare(nameB);
+  } else {
+    return nameB.localeCompare(nameA);
+  }
+};
+
+// Hàm sắp xếp
+const sortByName = () => {
+  const sorted = [...sortedBlogs].sort((a, b) => 
+    compareVietnameseNames(a.tenHs, b.tenHs, sortOrder)
+  );
+
+  setSortedBlogs(sorted);
+  setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+};
+
   const handleAttendanceClickForZero = (blog: any, info: any) => {
     handleAttendanceClick(blog, info, '1', 1);
   };
@@ -142,73 +194,7 @@ const AppStudents = (props: TableStudents) => {
   };
 
 
-  const handleAttendanceColumnClick = async () => {
-
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString();
-    const formattedTime = currentDate.toLocaleTimeString();
-
-
-
-    danhSachMaHs = props.blogs.map(blog => blog.maHs);
-    thoiGianVang = `${formattedDate} ${formattedTime}`;
-    console.log(thoiGianVang)
-    try {
-      const token = getCookie('token');
-      const apiUrl = `http://localhost:8989/api/classrooms/diemdanh/${maLop}`;
-
-      // Tạo đối tượng formData
-      const formData = {
-        thoiGianDiemDanh: thoiGianVang,
-      };
-
-      const response = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      } else {
-        customFunction();
-      }
-    } catch (error) {
-      console.error('Error fetching students:', error);
-    }
-    try {
-      const token = getCookie('token');
-      const apiUrl = `http://localhost:8989/api/students/diemdanh/${maLop}`;
-
-      // Tạo đối tượng formData
-      const formData = {
-        danhSachMaHs: danhSachMaHs,
-        thoiGianVang:
-          { date: thoiGianVang, count: '0' },
-      };
-
-      const response = await fetch(apiUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      } else {
-        customFunction();
-      }
-    } catch (error) {
-      console.error('Error fetching students:', error);
-    }
-
-  };
+  
   const handleDeleteStudent = async (maHs: number, tenHs: string) => {
     try {
       const token = getCookie('token');
@@ -232,77 +218,26 @@ const AppStudents = (props: TableStudents) => {
 
       if (response.ok) {
         customFunction();
-        alert(`Xóa thành công học sinh có tên ${tenHs}.`);
+        openMessageSuccess(`Xóa thành công học sinh có tên ${tenHs}.`);
       } else {
-        alert('Đã có lỗi xảy ra');
+        openMessageError('Đã có lỗi xảy ra');
       }
     } catch (error) {
-      console.error('Error while deleting classroom:', error);
-      alert('Đã có lỗi xảy ra');
+      // console.error('Error while deleting classroom:', error);
+      openMessageError('Đã có lỗi xảy ra');
     }
   };
-  const handleExport = () => {
-    const tenFile = `${tenLopHoc} ${lichHoc}`;
-    const exportData = sortedBlogs.map((student, index) => {
-      const studentData: any = {
-        'STT': index + 1,
-        'Tên Học Sinh': student.tenHs,
-        'Ngày Sinh': student.ngaySinh,
-        'Số Buổi Vắng': student.soBuoiVang,
-      };
 
-      // Add attendance information for each date
-      parseAttendanceInfo(thongTinDiemDanh).forEach((info) => {
-        const matchingInfo = parseAttendanceInfo2(student.thongTinBuoiVang).find(item => item.date === info);
-        studentData[`${info}`] = matchingInfo ? matchingInfo.count : '';
-      });
-
-      return studentData;
-    });
-
-    exportStudents(exportData, tenFile);
-  };
-  const handleImport = () => {
-    importStudent(maLop,customFunction);
-  };
 
   const handleEditStudent = (student: any) => {
     setStudentToEdit(student);
     setShowEditModal(true);
   };
 
-  const handleDownload = () => {
-    // Đường dẫn đến file trong thư mục excel
-    const filePath = '/form.xlsx';
 
-    // Tạo một thẻ <a> để tải file
-    const link = document.createElement('a');
-    link.href = filePath;
-    link.download = 'form.xlsx';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
   return (
-    <>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-          <Button variant="primary" className="mb-3" size="sm" onClick={() => setShowModelCreate(true)}>
-            <FontAwesomeIcon icon={faPlus} /> Thêm học sinh mới
-          </Button>{' '}
-          <Button variant="primary" className="mb-3" size="sm" onClick={handleImport}>
-            <FontAwesomeIcon icon={faArrowRightToBracket} /> Thêm học sinh bằng excel
-          </Button>{' '}
-          <Button variant="primary" className="mb-3" size="sm" onClick={handleDownload}>
-            <FontAwesomeIcon icon={faDownload} /> File excel mẫu
-          </Button>{' '}
-          <Button variant="primary" className="mb-3" size="sm" onClick={handleExport}>
-            <FontAwesomeIcon icon={faArrowRightFromBracket} /> Xuất danh sách học sinh
-          </Button>{' '}
-          <Button variant="primary" className="mb-3" size="sm" onClick={handleAttendanceColumnClick}>
-            <FontAwesomeIcon icon={faIdBadge} /> Điểm danh
-          </Button>
-        </div>
-        <Container>
+    <>{contextHolder}
+        <>
           <Table striped bordered hover >
             <thead >
               <tr>
@@ -313,7 +248,7 @@ const AppStudents = (props: TableStudents) => {
                   <div style={{ display: 'flex', justifyContent: 'center' }}>Tên Học Sinh <FontAwesomeIcon icon={faFilter} /></div>
                 </th>
                 <th>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>Ngày </div>
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>Ngày Sinh </div>
                   
                   </th>
                 {parseAttendanceInfo(thongTinDiemDanh).map((info, index) => (
@@ -371,7 +306,7 @@ const AppStudents = (props: TableStudents) => {
               ))}
             </tbody>
           </Table>
-        </Container>
+        </>
         <CreateStudents
           showModelCreate={showModelCreate}
           setShowModelCreate={setShowModelCreate}

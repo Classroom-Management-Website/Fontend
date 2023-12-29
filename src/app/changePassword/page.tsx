@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import { getCookie } from '@/getCookie/getCookie';
 import { useRouter } from 'next/navigation'
 import deleteCookie from '@/getCookie/deleteCookie';
+import { message } from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
 function BasicExample() {
   const router = useRouter();
@@ -12,11 +13,43 @@ function BasicExample() {
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [messageApi, contextHolder] = message.useMessage();
+  const key = 'updatable';
 
+  const openMessageSuccess = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'success',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
+  const openMessageError = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'error',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (newPassword !== confirmNewPassword) {
-      alert("Mật khẩu mới và xác nhận mật khẩu không khớp!");
+      openMessageError("Mật khẩu mới và xác nhận mật khẩu không khớp!");
       return;
     }
 
@@ -36,17 +69,18 @@ function BasicExample() {
       if (!response.ok) {
         throw new Error('Có lỗi xảy ra khi cập nhật mật khẩu');
       }
-      alert('Mật khẩu đã được cập nhật thành công');
+      openMessageSuccess('Mật khẩu đã được cập nhật thành công');
       deleteCookie('token')
       router.push('/login')
     } catch (error) {
-      alert("Mật khẩu cũ không đúng")
+      openMessageError("Mật khẩu cũ không đúng")
     }
   };
   const handleCancel = () => {
     router.push("/")
   };
   return (
+    <>{contextHolder}
     <Form>
       <Form.Group className="mb-3" controlId="formBasicOldPassword">
         <Form.Label>Nhập mật khẩu cũ</Form.Label>
@@ -91,6 +125,7 @@ function BasicExample() {
         </Button>
       </>
     </Form>
+    </>
   );
 }
 

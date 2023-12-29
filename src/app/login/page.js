@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation'
-
+import { message } from 'antd';
 const Body = styled.div`
 background: #f6f5f7;
 display: flex;
@@ -203,6 +203,39 @@ function getCookie(cname) {
 
 export default function Page() {
   const router = useRouter();
+  const [messageApi, contextHolder] = message.useMessage();
+  const key = 'updatable';
+
+  const openMessageSuccess = (text) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'success',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
+  const openMessageError = (text) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'error',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
   useEffect(() => {
     // Function to check the token
     const checkTokenValidity = async () => {
@@ -256,15 +289,15 @@ export default function Page() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     if (!signIn && !isPasswordMatch()) {
-      alert('Mật khẩu và xác nhận mật khẩu không khớp!');
+      openMessageError('Mật khẩu và xác nhận mật khẩu không khớp!');
       return;
     }
     if (!signIn && (!formData.fullName || !formData.sdt || !formData.userName || !formData.passWord || !formData.confirmPassWord || !isPasswordMatch())) {
-      alert('Vui lòng điền đầy đủ tất cả các trường thông tin!');
+      openMessageError('Vui lòng điền đầy đủ tất cả các trường thông tin!');
       return;
     }
     if (signIn && (!formData.userName || !formData.passWord)) {
-      alert('Vui lòng điền đầy đủ tất cả các trường thông tin!');
+      openMessageError('Vui lòng điền đầy đủ tất cả các trường thông tin!');
       return;
     }
     try {
@@ -281,31 +314,33 @@ export default function Page() {
         // credentials: 'include', // Bật chia sẻ cookie giữa frontend và backend
       });
 
-      console.log('Phản hồi từ máy chủ:', response);
+      // console.log('Phản hồi từ máy chủ:', response);
       const { statusText } = response;
       if (statusText == 'Conflict') {
-        alert('Tài khoản hoặc số điện thoại đã tồn tại')
+        openMessageError('Tài khoản hoặc số điện thoại đã tồn tại')
       }
       else if (statusText == 'Created') {
-        alert('Đăng ký tài khoản thành công')
+        openMessageSuccess('Đăng ký tài khoản thành công')
         setSignIn(true)
       }
       else if (statusText == 'Unauthorized') {
-        alert('Tài khoản hoặc mật khẩu không đúng')
+        openMessageError('Tài khoản hoặc mật khẩu không đúng')
       }
       else if (statusText == 'OK') {
         const responseData = await response.json();
         setCookie('token', responseData.token, 1);
+        openMessageSuccess('Đăng nhập thành công')
         router.push('/')
-
-
       }
     } catch (error) {
       console.error('Lỗi:', error);
     }
   };
-
+const contactWithMe = () =>{
+  alert("Liên hệ zalo admin (0378204994) bằng sđt đăng ký để lấy lại mật khẩu")
+}
   return (
+    <>{contextHolder}
     <Body>
     <Container>
       <SignUpContainer $signinIn={signIn}>
@@ -313,7 +348,7 @@ export default function Page() {
           <Title>{signIn ? 'Đăng nhập' : 'Tạo tài khoản'}</Title>
           {!signIn && (
             <Input
-              type='fullName'
+              type='string'
               name='fullName'
               placeholder='Họ và tên'
               value={formData.fullName}
@@ -322,7 +357,7 @@ export default function Page() {
           )}
           {!signIn && (
             <Input
-              type='sdt'
+              type='number'
               name='sdt'
               placeholder='Số điện thoại'
               value={formData.sdt}
@@ -373,7 +408,7 @@ export default function Page() {
             onChange={handleInputChange}
           />
 
-          <Anchor href='#'>Quên mật khẩu?</Anchor>
+          <Anchor onClick={contactWithMe}>Quên mật khẩu?</Anchor>
           <Button type='submit' >Đăng nhập</Button>
         </Form>
       </SignInContainer>
@@ -403,6 +438,7 @@ export default function Page() {
       </OverlayContainer>
     </Container>
     </Body>
+    </>
   );
 }
 

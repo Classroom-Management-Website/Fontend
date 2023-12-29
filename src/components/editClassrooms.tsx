@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import DateTimePicker from './editDateTimePicker';
 import { getCookie } from '@/getCookie/getCookie';
+import { message } from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
 interface EditClassroomsProps {
   show: boolean;
@@ -17,8 +18,39 @@ interface EditClassroomsProps {
 const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassroomsProps) => {
   const [tenLopHoc, setTenLopHoc] = useState('');
   const [lichHoc, setLichHoc] = useState('');
+  const [messageApi, contextHolder] = message.useMessage();
+  const key = 'updatable';
 
-
+  const openMessageSuccess = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'success',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
+  const openMessageError = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'error',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
 
   useEffect(() => {
     if (classroom) {
@@ -31,7 +63,7 @@ const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassrooms
   const handleSubmit = async () => {
     // Validation code...
     if (!tenLopHoc || !lichHoc) {
-      alert('Vui lòng điền đầy đủ thông tin');
+      openMessageError('Vui lòng điền đầy đủ thông tin');
       return;
     }
     try {
@@ -57,7 +89,7 @@ const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassrooms
       } else {
         onHide();
         refreshData();
-        alert('Cập nhật lớp học thành công');
+        openMessageSuccess('Cập nhật lớp học thành công');
       }
     } catch (error) {
       console.error('Error updating classroom:', error);
@@ -66,6 +98,7 @@ const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassrooms
   };
 
   return (
+    <>{contextHolder}
     <Modal 
     show={show}
     onHide={onHide}
@@ -100,6 +133,7 @@ const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassrooms
         <Button variant="primary" onClick={handleSubmit}>Cập nhật</Button>
       </Modal.Footer>
     </Modal>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-
+import { message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV, faPlus, faEdit, faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
 import CreateClassrooms from './createClassrooms';
@@ -29,7 +29,24 @@ const Apptable = (props: TableClassrooms) => {
   // Inside the Apptable component
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentClassroom, setCurrentClassroom] = useState<Classroom | null>(null);
+  const [messageApi, contextHolder] = message.useMessage();
+  const key = 'updatable';
 
+  const openMessageSuccess = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'success',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
   const handleEditClassroom = (classroom: Classroom) => {
     setCurrentClassroom(classroom);
     setShowEditModal(true);
@@ -54,7 +71,7 @@ const Apptable = (props: TableClassrooms) => {
 
       if (response.ok) {
         customFunction();
-        alert(`Xóa thành công lớp học có tên ${tenLopHoc}.`);
+        openMessageSuccess(`Xóa thành công lớp học: ${tenLopHoc}`);
       } else {
         throw new Error ('Đã có lỗi xảy ra');
       }
@@ -71,6 +88,7 @@ const Apptable = (props: TableClassrooms) => {
 
   return (
     <>
+    {contextHolder}
       <>
         <div>
           <Button variant="primary" className="mb-3" onClick={() => setShowModelCreate(true)}>

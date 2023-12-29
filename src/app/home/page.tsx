@@ -52,9 +52,11 @@ const items: MenuItem[] = [
 
 const App: React.FC = () => {
   const router = useRouter();
+  const [text, setText] = React.useState('https://ant.design/');
   const [teacherData, setTeacherData] = useState<TeacherData | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [classroomsData, setClassroomsData] = useState(null);
+
   useEffect(() => {
     // Function to check the token
     const checkTokenValidity = async () => {
@@ -67,7 +69,7 @@ const App: React.FC = () => {
           },
         });
         const data = await response.json();
-        console.log(data)
+        // console.log(data)
         if (response.ok) {
           // Token is valid
           // setIsValidToken(true);
@@ -99,14 +101,13 @@ const App: React.FC = () => {
       }
       else {
         const data = await response.json();
-        console.log('Classrooms data:', data);
+        // console.log('Classrooms data:', data);
         setClassroomsData(data);
       }
 
 
     } catch (error) {
-      console.error('Error fetching data:', error);
-      // Handle error as needed
+      alert('Error fetching data');
     }
   };
   const {
@@ -121,17 +122,20 @@ const App: React.FC = () => {
     else if (key == 5) {
       reloadTableData();
     }
-    else if (key == 4){
+    else if (key == 4) {
       router.push('/changePassword');
-    };
+    }
+    else if (key == 2) {
+      window.location.href = 'https://me.momo.vn/unghotacgia';
+    }
 
   };
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-        <div style={{height: '60px'}}>
-
-          </div>
+        <div style={{ height: '60px' }}>
+          <h1>L&P</h1>
+        </div>
         <Menu onClick={handleClick}
           theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
       </Sider>
