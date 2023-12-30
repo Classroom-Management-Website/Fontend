@@ -2,6 +2,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { config } from '@/config/config';
+import { message } from 'antd';
 import {
   BankOutlined,
   YoutubeOutlined,
@@ -57,7 +58,39 @@ const App: React.FC = () => {
   const [teacherData, setTeacherData] = useState<TeacherData | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [classroomsData, setClassroomsData] = useState(null);
+  const [messageApi, contextHolder] = message.useMessage();
+  const key = 'updatable';
 
+  const openMessageSuccess = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'success',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
+  const openMessageError = (text:string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type:'error',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
   useEffect(() => {
     // Function to check the token
     const checkTokenValidity = async () => {
@@ -98,7 +131,7 @@ const App: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        openMessageError('Network response was not ok');
       }
       else {
         const data = await response.json();
@@ -108,7 +141,7 @@ const App: React.FC = () => {
 
 
     } catch (error) {
-      alert('Error fetching data');
+      openMessageError('Error fetching data');
     }
   };
   const {
@@ -135,6 +168,7 @@ const App: React.FC = () => {
 
   };
   return (
+    <>{contextHolder}
     <Layout style={{ minHeight: '100vh' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div style={{ height: '60px' }}>
@@ -167,6 +201,7 @@ const App: React.FC = () => {
         <Footer style={{ textAlign: 'center' }}>Bản quyền thuộc về (L&P)</Footer>
       </Layout>
     </Layout>
+    </>
   );
 };
 

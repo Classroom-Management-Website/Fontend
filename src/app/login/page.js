@@ -331,7 +331,7 @@ export default function Page() {
         const responseData = await response.json();
         setCookie('token', responseData.token, 1);
         openMessageSuccess('Đăng nhập thành công')
-        router.push('/')
+        router.push('/home')
       }
     } catch (error) {
       console.error('Lỗi:', error);
