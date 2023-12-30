@@ -132,7 +132,7 @@ function BasicExample() {
       <>
         <Button variant="danger" onClick={handleCancel}>
           Hủy
-        </Button>
+        </Button>{' '}
         <Button variant="primary" onClick={handleSubmit}>
           Xác nhận
         </Button>
