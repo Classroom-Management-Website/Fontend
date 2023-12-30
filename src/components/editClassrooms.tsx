@@ -3,6 +3,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import DateTimePicker from './editDateTimePicker';
 import { getCookie } from '@/getCookie/getCookie';
 import { message } from 'antd';
+import { config } from '@/config/config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 interface EditClassroomsProps {
   show: boolean;
@@ -68,7 +69,7 @@ const EditClassrooms = ({ show, onHide, classroom, refreshData }: EditClassrooms
     }
     try {
       const token = getCookie('token');
-      const apiUrl = `http://localhost:8989/api/classrooms/${classroom.maLop}`;
+      const apiUrl = `${config.apiUrl}/classrooms/${classroom.maLop}`;
       const formData = {
         tenLopHoc,
         lichHoc,

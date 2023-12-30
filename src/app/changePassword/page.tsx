@@ -6,6 +6,7 @@ import { getCookie } from '@/getCookie/getCookie';
 import { useRouter } from 'next/navigation'
 import deleteCookie from '@/getCookie/deleteCookie';
 import { message } from 'antd';
+import { config } from '@/config/config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 function BasicExample() {
   const router = useRouter();
@@ -57,7 +58,7 @@ function BasicExample() {
     try {
 
       const token = getCookie('token');
-      const response = await fetch('http://localhost:8989/api/teachers/changePassword', {
+      const response = await fetch(`${config.apiUrl}/teachers/changePassword`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

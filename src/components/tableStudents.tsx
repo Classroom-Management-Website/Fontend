@@ -9,6 +9,7 @@ import { exportStudents } from '@/excel/exportStudents';
 import { importStudent } from '@/excel/importStudents';
 import { Button, Container, Col, Row, Navbar, Nav } from 'react-bootstrap';
 import { message } from 'antd';
+import { config } from '@/config/config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 interface TableStudents {
   blogs: {
@@ -161,7 +162,7 @@ const sortByName = () => {
 
         try {
           const token = getCookie('token');
-          const apiUrl = 'http://localhost:8989/api/students/' + maLop;
+          const apiUrl = `${config.apiUrl}/students/${maLop}`;
 
           // Tạo đối tượng formData
           const formData = {
@@ -207,7 +208,7 @@ const sortByName = () => {
       const formData = {
         maHs: maHs
       };
-      const response = await fetch(`http://localhost:8989/api/students/${maLop}`, {
+      const response = await fetch(`${config.apiUrl}/students/${maLop}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { getCookie } from '@/getCookie/getCookie';
 import { useRouter } from 'next/navigation';
 import { Button,Table, Container, Col, Row, Navbar, Nav } from 'react-bootstrap';
+import { config } from '@/config/config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 interface TableClassrooms {
   blogs: {
@@ -75,7 +76,7 @@ const Apptable = (props: TableClassrooms) => {
         return; // User canceled the deletion
       }
 
-      const response = await fetch(`http://localhost:8989/api/classrooms/${maLop}`, {
+      const response = await fetch(`${config.apiUrl}/classrooms/${maLop}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

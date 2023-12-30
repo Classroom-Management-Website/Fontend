@@ -6,6 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import DateTimePicker from './DateTimePicker';
 import { getCookie } from '@/getCookie/getCookie';
 import { useRouter } from 'next/navigation'
+import { config } from '@/config/config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 interface IProps{
     showModelCreate: boolean;
@@ -55,7 +56,7 @@ function CreateClassrooms(props: IProps) {
       if(tenLopHoc && lichHoc){
         try {
           const token = getCookie('token');
-          const apiUrl = 'http://localhost:8989/api/classrooms';
+          const apiUrl = `${config.apiUrl}/classrooms`;
       
           // Tạo đối tượng formData
           const formData = {

@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation'
 import { message } from 'antd';
+import { config } from "@/config/config";
 const Body = styled.div`
 background: #f6f5f7;
 display: flex;
@@ -241,7 +242,7 @@ export default function Page() {
     const checkTokenValidity = async () => {
       try {
         const token = getCookie('token');
-        const response = await fetch('http://localhost:8989/api/teachers/auth/me', {
+        const response = await fetch(`${config.apiUrl}/api/teachers/auth/me`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -302,8 +303,8 @@ export default function Page() {
     }
     try {
       const url = signIn
-        ? 'http://localhost:8989/api/teachers/login'
-        : 'http://localhost:8989/api/teachers/register';
+        ? `${config.apiUrl}/api/teachers/login`
+        : `${config.apiUrl}/api/teachers/register`;
 
       const response = await fetch(url, {
         method: 'POST',

@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getCookie } from '@/getCookie/getCookie';
 import { message } from 'antd';
+import { config } from '@/config/config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 interface EditStudentsProps {
   showEditModal: boolean;
@@ -87,7 +88,7 @@ function EditStudents(props: EditStudentsProps) {
     if (tenHs) {
       try {
         const token = getCookie('token');
-        const apiUrl = `http://localhost:8989/api/students/${maLop}`;
+        const apiUrl = `${config.apiUrl}/students/${maLop}`;
         const formData = {
             maHs: studentToEdit?.maHs,
           tenHs: tenHs,

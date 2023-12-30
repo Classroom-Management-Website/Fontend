@@ -7,6 +7,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { getCookie } from '@/getCookie/getCookie';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { config } from '@/config/config';
 interface IProps {
   showModelCreate: boolean;
   setShowModelCreate: (value: boolean) => void;
@@ -82,7 +83,7 @@ function CreateStudents(props: IProps) {
     if (tenHs) {
       try {
         const token = getCookie('token');
-        const apiUrl = 'http://localhost:8989/api/students/' + maLop;
+        const apiUrl = `${config.apiUrl}/students/${maLop}`;
 
         // Tạo đối tượng formData
         const formData = {

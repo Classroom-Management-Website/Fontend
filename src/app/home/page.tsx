@@ -1,6 +1,7 @@
 // home/page.tsx
 "use client"
 import React, { useState, useEffect } from 'react';
+import { config } from '@/config/config';
 import {
   BankOutlined,
   YoutubeOutlined,
@@ -62,7 +63,7 @@ const App: React.FC = () => {
     const checkTokenValidity = async () => {
       try {
         const token = getCookie('token');
-        const response = await fetch('http://localhost:8989/api/teachers/auth/me', {
+        const response = await fetch(`${config.apiUrl}/teachers/auth/me`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -89,7 +90,7 @@ const App: React.FC = () => {
   const reloadTableData = async () => {
     try {
       const token = getCookie('token');
-      const response = await fetch('http://localhost:8989/api/classrooms', {
+      const response = await fetch(`${config.apiUrl}/classrooms`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,

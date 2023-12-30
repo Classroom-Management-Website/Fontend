@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 import { getCookie } from '@/getCookie/getCookie';
-
+import { config } from '@/config/config';
 interface Student {
     tenHs: string;
     ngaySinh: string;
@@ -52,7 +52,7 @@ export function importStudent(maLop: number, customFunction: () => void) {
 
             try {
                 const token = getCookie('token');
-                const apiUrl = 'http://localhost:8989/api/students/import/' + maLop;
+                const apiUrl = `${config.apiUrl}/students/import/${maLop}`;
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',

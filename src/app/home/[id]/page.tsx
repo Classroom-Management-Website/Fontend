@@ -11,7 +11,7 @@ import AppStudents from '@/components/tableStudents';
 import CreateStudents from '@/components/createStudents';
 import deleteCookie from '@/getCookie/deleteCookie';
 import type { MenuProps } from 'antd';
-
+import { config } from '@/config/config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   ExportOutlined,
@@ -86,7 +86,7 @@ const ViewClassrooms = ({ params }: { params: { id: number } }) => {
     const checkTokenValidity = async () => {
       try {
         const token = getCookie('token');
-        const response = await fetch('http://localhost:8989/api/teachers/auth/me', {
+        const response = await fetch(`${config.apiUrl}/teachers/auth/me`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -113,7 +113,7 @@ const ViewClassrooms = ({ params }: { params: { id: number } }) => {
   const reloadStudents = async () => {
     try {
       const token = getCookie('token');
-      const response = await fetch(`http://localhost:8989/api/students/${maLop}`, {
+      const response = await fetch(`${config.apiUrl}/students/${maLop}`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -162,7 +162,7 @@ const ViewClassrooms = ({ params }: { params: { id: number } }) => {
         // console.log(thoiGianVang, danhSachMaHs)
         try {
           const token = getCookie('token');
-          const apiUrl = `http://localhost:8989/api/classrooms/diemdanh/${maLop}`;
+          const apiUrl = `${config.apiUrl}/classrooms/diemdanh/${maLop}`;
 
           // Tạo đối tượng formData
           const formData = {
@@ -188,7 +188,7 @@ const ViewClassrooms = ({ params }: { params: { id: number } }) => {
         }
         try {
           const token = getCookie('token');
-          const apiUrl = `http://localhost:8989/api/students/diemdanh/${maLop}`;
+          const apiUrl = `${config.apiUrl}/students/diemdanh/${maLop}`;
 
           // Tạo đối tượng formData
           const formData = {
