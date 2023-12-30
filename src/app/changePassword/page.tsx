@@ -7,7 +7,18 @@ import { useRouter } from 'next/navigation'
 import deleteCookie from '@/getCookie/deleteCookie';
 import { message } from 'antd';
 import { config } from '@/config/config';
+import styled from 'styled-components';
 import 'bootstrap/dist/css/bootstrap.min.css';
+const Body = styled.div`
+background: #f6f5f7;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+font-family: "Montserrat", sans-serif;
+height: 100vh;
+margin: -20px 0 50px;
+`;
 function BasicExample() {
   const router = useRouter();
   const [oldPassword, setOldPassword] = useState<string>('');
@@ -82,6 +93,7 @@ function BasicExample() {
   };
   return (
     <>{contextHolder}
+      <Body>
     <Form>
       <Form.Group className="mb-3" controlId="formBasicOldPassword">
         <Form.Label>Nhập mật khẩu cũ</Form.Label>
@@ -126,6 +138,7 @@ function BasicExample() {
         </Button>
       </>
     </Form>
+    </Body>
     </>
   );
 }
