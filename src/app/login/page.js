@@ -242,7 +242,7 @@ export default function Page() {
     const checkTokenValidity = async () => {
       try {
         const token = getCookie('token');
-        const response = await fetch(`${config.apiUrl}/api/teachers/auth/me`, {
+        const response = await fetch(`${config.apiUrl}/teachers/auth/me`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -250,7 +250,7 @@ export default function Page() {
         });
         const data = await response.json();
         if (response.ok) {
-          router.push('/');
+          router.push('/home');
         }
       } catch (error) {
         console.error(error);
@@ -303,8 +303,8 @@ export default function Page() {
     }
     try {
       const url = signIn
-        ? `${config.apiUrl}/api/teachers/login`
-        : `${config.apiUrl}/api/teachers/register`;
+        ? `${config.apiUrl}/teachers/login`
+        : `${config.apiUrl}/teachers/register`;
 
       const response = await fetch(url, {
         method: 'POST',
