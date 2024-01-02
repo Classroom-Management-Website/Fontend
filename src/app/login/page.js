@@ -220,7 +220,7 @@ export default function Page() {
         content: text,
         duration: 2,
       });
-    }, 500);
+    }, 1000);
   };
   const openMessageError = (text) => {
     messageApi.open({
@@ -330,8 +330,8 @@ export default function Page() {
       else if (statusText == 'OK') {
         const responseData = await response.json();
         setCookie('token', responseData.token, 1);
-        openMessageSuccess('Đăng nhập thành công')
-        router.push('/')
+        openMessageSuccess('Đăng nhập thành công, đang chuyển tới trang home')
+        router.push('/home');
       }
     } catch (error) {
       console.error('Lỗi:', error);

@@ -2,6 +2,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { config } from '@/config/config';
+import { message } from 'antd';
 import {
   BankOutlined,
   YoutubeOutlined,
@@ -53,11 +54,42 @@ const items: MenuItem[] = [
 
 const App: React.FC = () => {
   const router = useRouter();
-  const [text, setText] = React.useState('https://ant.design/');
   const [teacherData, setTeacherData] = useState<TeacherData | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [classroomsData, setClassroomsData] = useState(null);
+  const [messageApi, contextHolder] = message.useMessage();
+  const key = 'updatable';
 
+  const openMessageSuccess = (text: string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type: 'success',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
+  const openMessageError = (text: string) => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: 'Loading...',
+    });
+    setTimeout(() => {
+      messageApi.open({
+        key,
+        type: 'error',
+        content: text,
+        duration: 2,
+      });
+    }, 500);
+  };
   useEffect(() => {
     // Function to check the token
     const checkTokenValidity = async () => {
@@ -72,12 +104,10 @@ const App: React.FC = () => {
         const data = await response.json();
         // console.log(data)
         if (response.ok) {
-          // Token is valid
-          // setIsValidToken(true);
           setTeacherData(data.teacher); // Set teacher data here
         } else {
           router.push('/login');
-        }
+        };
       } catch (error) {
         console.error(error);
         // Handle error
@@ -98,7 +128,7 @@ const App: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        openMessageError('Network response was not ok');
       }
       else {
         const data = await response.json();
@@ -108,7 +138,7 @@ const App: React.FC = () => {
 
 
     } catch (error) {
-      alert('Error fetching data');
+      openMessageError('Error fetching data');
     }
   };
   const {
@@ -129,44 +159,46 @@ const App: React.FC = () => {
     else if (key == 2) {
       window.location.href = 'https://me.momo.vn/unghotacgia';
     }
-    else{
-      window.location.href ='https://youtu.be/4q6Oy21gGl4';
+    else {
+      window.location.href = 'https://youtu.be/4q6Oy21gGl4';
     };
 
   };
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-        <div style={{ height: '60px' }}>
-          <h1>L&P</h1>
-        </div>
-        <Menu onClick={handleClick}
-          theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
-      </Sider>
-      <Layout>
-        <Header style={{ padding: '10px 20px', background: colorBgContainer }}><h3>Chào mừng {teacherData?.fullName} đến với trang quản lý lớp học</h3></Header>
-
-        <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '10px 0' }}>
-          </Breadcrumb>
-          <div
-            style={{
-              padding: 24,
-              minHeight: 60,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            {classroomsData ? (
-              <Apptable blogs={classroomsData} customFunction={reloadTableData} />
-            ) : (
-              <h3>Trang chủ</h3>
-            )}
+    <>{contextHolder}
+      <Layout style={{ minHeight: '100vh' }}>
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+          <div style={{ height: '60px',display: 'flex', justifyContent: 'center' }}>
+            <h1>L&P</h1>
           </div>
-        </Content>
-        <Footer style={{ textAlign: 'center' }}>Bản quyền thuộc về (L&P)</Footer>
+          <Menu onClick={handleClick}
+            theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        </Sider>
+        <Layout>
+          <Header style={{ padding: '10px 20px', background: colorBgContainer }}><h3>Chào mừng {teacherData?.fullName} đến với trang quản lý lớp học</h3></Header>
+
+          <Content style={{ margin: '0 16px' }}>
+            <Breadcrumb style={{ margin: '10px 0' }}>
+            </Breadcrumb>
+            <div
+              style={{
+                padding: 24,
+                minHeight: 60,
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
+            >
+              {classroomsData ? (
+                <Apptable blogs={classroomsData} customFunction={reloadTableData} />
+              ) : (
+                <h3>Trang chủ</h3>
+              )}
+            </div>
+          </Content>
+          <Footer style={{ textAlign: 'center' }}>Bản quyền thuộc về (L&P)</Footer>
+        </Layout>
       </Layout>
-    </Layout>
+    </>
   );
 };
 
