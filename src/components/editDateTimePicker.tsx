@@ -95,7 +95,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({ initialDateTime, onDate
           value={daysOfWeekOptions.filter(option => dayTimeMap[option.value])}
         />
         </div>
-      <div style={{ margin: '5px' }}>
+      <div style={{ margin: '10px'}}>
         {Object.entries(dayTimeMap).map(([dayValue, date]) => (
           <div key={dayValue}>
             <label>{daysOfWeekOptions.find(option => option.value === dayValue)?.label}:</label>
