@@ -72,7 +72,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({ onDateTimeChange }) => 
           isMulti
         />
       </div>
-      <div style={{ margin: '5px' }}>
+      <div style={{ margin: '10px' }}>
         {Object.values(daysOfWeek).filter(option => dayTimeMap[option.value]).map((dayOption) => (
           <div key={dayOption.value}>
             <label>{dayOption.label}:</label>
