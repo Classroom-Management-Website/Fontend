@@ -60,7 +60,7 @@ const App: React.FC = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const key = 'updatable';
 
-  const openMessageSuccess = (text: string) => {
+  const openMessageSuccess = (text:string) => {
     messageApi.open({
       key,
       type: 'loading',
@@ -69,13 +69,14 @@ const App: React.FC = () => {
     setTimeout(() => {
       messageApi.open({
         key,
-        type: 'success',
+        type:'success',
         content: text,
         duration: 2,
       });
     }, 500);
   };
-  const openMessageError = (text: string) => {
+
+  const openMessageError = (text:string) => {
     messageApi.open({
       key,
       type: 'loading',
@@ -84,7 +85,7 @@ const App: React.FC = () => {
     setTimeout(() => {
       messageApi.open({
         key,
-        type: 'error',
+        type:'error',
         content: text,
         duration: 2,
       });
@@ -166,10 +167,33 @@ const App: React.FC = () => {
   };
   return (
     <>{contextHolder}
-      <Layout style={{ minHeight: '100vh' }}>
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-          <div style={{ height: '60px',display: 'flex', justifyContent: 'center' }}>
-            <h1>L&P</h1>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+        <div style={{ height: '60px' }}>
+          <h1>L&P</h1>
+        </div>
+        <Menu onClick={handleClick}
+          theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+      </Sider>
+      <Layout>
+        <Header style={{ padding: '10px 20px', background: colorBgContainer }}><h3>Chào mừng {teacherData?.fullName} đến với trang quản lý lớp học</h3></Header>
+
+        <Content style={{ margin: '0 16px' }}>
+          <Breadcrumb style={{ margin: '10px 0' }}>
+          </Breadcrumb>
+          <div
+            style={{
+              padding: 24,
+              minHeight: 60,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            {classroomsData ? (
+              <Apptable blogs={classroomsData} customFunction={reloadTableData} />
+            ) : (
+              <h3>Trang chủ</h3>
+            )}
           </div>
           <Menu onClick={handleClick}
             theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
