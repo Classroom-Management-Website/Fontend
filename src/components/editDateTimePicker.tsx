@@ -34,7 +34,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({ initialDateTime, onDate
       parts.forEach(part => {
         const [dayLabel, time] = part.split(' lúc ');
         const dayOption = daysOfWeekOptions.find(option => option.label === dayLabel);
-        
+
         if (dayOption) {
           const [hour, minute] = time.split(':');
           newDayTimeMap[dayOption.value] = new Date();
@@ -48,7 +48,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({ initialDateTime, onDate
 
   const handleDayChange = (selectedOptions: DayOption[]) => {
     const newDayTimeMap: { [key: string]: Date } = { ...dayTimeMap };
-    
+
     selectedOptions.forEach(option => {
       if (!newDayTimeMap[option.value]) {
         newDayTimeMap[option.value] = new Date();
@@ -87,26 +87,30 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({ initialDateTime, onDate
 
   return (
     <div>
-      <Select
-        options={daysOfWeekOptions}
-        isMulti
-        onChange={(options) => handleDayChange(options as DayOption[])}
-        value={daysOfWeekOptions.filter(option => dayTimeMap[option.value])}
-      />
-      {Object.entries(dayTimeMap).map(([dayValue, date]) => (
-        <div key={dayValue}>
-          <label>{daysOfWeekOptions.find(option => option.value === dayValue)?.label}:</label>
-          <DatePicker
-            selected={date}
-            onChange={(newDate) => handleTimeChange(dayValue, newDate as Date)}
-            showTimeSelect
-            showTimeSelectOnly
-            timeIntervals={15}
-            timeCaption="Time"
-            dateFormat="HH:mm"
-          />
+      <div>
+        <Select
+          options={daysOfWeekOptions}
+          isMulti
+          onChange={(options) => handleDayChange(options as DayOption[])}
+          value={daysOfWeekOptions.filter(option => dayTimeMap[option.value])}
+        />
         </div>
-      ))}
+      <div style={{ margin: '5px' }}>
+        {Object.entries(dayTimeMap).map(([dayValue, date]) => (
+          <div key={dayValue}>
+            <label>{daysOfWeekOptions.find(option => option.value === dayValue)?.label}:</label>
+            <DatePicker
+              selected={date}
+              onChange={(newDate) => handleTimeChange(dayValue, newDate as Date)}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={15}
+              timeCaption="Time"
+              dateFormat="HH:mm"
+            />
+          </div>
+        ))}
+        </div>
     </div>
   );
 };

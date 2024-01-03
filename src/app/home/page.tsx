@@ -54,7 +54,6 @@ const items: MenuItem[] = [
 
 const App: React.FC = () => {
   const router = useRouter();
-  const [text, setText] = React.useState('https://ant.design/');
   const [teacherData, setTeacherData] = useState<TeacherData | null>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [classroomsData, setClassroomsData] = useState(null);
@@ -76,6 +75,7 @@ const App: React.FC = () => {
       });
     }, 500);
   };
+
   const openMessageError = (text:string) => {
     messageApi.open({
       key,
@@ -105,12 +105,10 @@ const App: React.FC = () => {
         const data = await response.json();
         // console.log(data)
         if (response.ok) {
-          // Token is valid
-          // setIsValidToken(true);
           setTeacherData(data.teacher); // Set teacher data here
         } else {
           router.push('/login');
-        }
+        };
       } catch (error) {
         console.error(error);
         // Handle error
@@ -162,8 +160,8 @@ const App: React.FC = () => {
     else if (key == 2) {
       window.location.href = 'https://me.momo.vn/unghotacgia';
     }
-    else{
-      window.location.href ='https://youtu.be/4q6Oy21gGl4';
+    else {
+      window.location.href = 'https://youtu.be/4q6Oy21gGl4';
     };
 
   };
@@ -197,10 +195,33 @@ const App: React.FC = () => {
               <h3>Trang chủ</h3>
             )}
           </div>
-        </Content>
-        <Footer style={{ textAlign: 'center' }}>Bản quyền thuộc về (L&P)</Footer>
+          <Menu onClick={handleClick}
+            theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        </Sider>
+        <Layout>
+          <Header style={{ padding: '10px 20px', background: colorBgContainer }}><h3>Chào mừng {teacherData?.fullName} đến với trang quản lý lớp học</h3></Header>
+
+          <Content style={{ margin: '0 16px' }}>
+            <Breadcrumb style={{ margin: '10px 0' }}>
+            </Breadcrumb>
+            <div
+              style={{
+                padding: 24,
+                minHeight: 60,
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
+            >
+              {classroomsData ? (
+                <Apptable blogs={classroomsData} customFunction={reloadTableData} />
+              ) : (
+                <h3>Trang chủ</h3>
+              )}
+            </div>
+          </Content>
+          <Footer style={{ textAlign: 'center' }}>Bản quyền thuộc về (L&P)</Footer>
+        </Layout>
       </Layout>
-    </Layout>
     </>
   );
 };

@@ -93,7 +93,7 @@ function BasicExample() {
   };
   return (
     <>{contextHolder}
-      <Body>
+    <Body>
     <Form>
       <Form.Group className="mb-3" controlId="formBasicOldPassword">
         <Form.Label>Nhập mật khẩu cũ</Form.Label>
