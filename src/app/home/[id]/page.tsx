@@ -81,6 +81,39 @@ const ViewClassrooms = ({ params }: { params: { id: number } }) => {
   const [classroomData, setClassroomData] = useState<ClassroomData | null>(null);
   const [showModelCreate, setShowModelCreate] = useState<boolean>(false);
   const [teacherData, setTeacherData] = useState<TeacherData | null>(null);
+  const [messageApi, contextHolder] = message.useMessage();
+    const key = 'updatable';
+  
+    const openMessageSuccess = (text:string) => {
+      messageApi.open({
+        key,
+        type: 'loading',
+        content: 'Loading...',
+      });
+      setTimeout(() => {
+        messageApi.open({
+          key,
+          type:'success',
+          content: text,
+          duration: 2,
+        });
+      }, 500);
+    };
+    const openMessageError = (text:string) => {
+      messageApi.open({
+        key,
+        type: 'loading',
+        content: 'Loading...',
+      });
+      setTimeout(() => {
+        messageApi.open({
+          key,
+          type:'error',
+          content: text,
+          duration: 2,
+        });
+      }, 500);
+    };
   useEffect(() => {
     // Function to check the token
     const checkTokenValidity = async () => {
@@ -121,7 +154,8 @@ const ViewClassrooms = ({ params }: { params: { id: number } }) => {
       });
       if (!response.ok) {
         setError(true);
-        throw new Error('Network response was not ok');
+        openMessageError('Network response was not ok');
+        return;
       }
       const data = await response.json();
       if (data) {
@@ -179,12 +213,12 @@ const ViewClassrooms = ({ params }: { params: { id: number } }) => {
           });
 
           if (!response.ok) {
-            throw new Error('Network response was not ok');
+            openMessageError('Network response was not ok');
           } else {
             reloadStudents();
           }
         } catch (error) {
-          console.error('Error fetching students:', error);
+          openMessageError('Error fetching students');
         }
         try {
           const token = getCookie('token');
@@ -207,18 +241,18 @@ const ViewClassrooms = ({ params }: { params: { id: number } }) => {
           });
 
           if (!response.ok) {
-            throw new Error('Network response was not ok');
+            openMessageError('Network response was not ok');
           } else {
             reloadStudents();
           }
         } catch (error) {
-          console.error('Error fetching students:', error);
+          openMessageError('Error fetching students');
         }
       } else {
-        alert("Không có học sinh nào để điểm danh")
+        openMessageError("Không có học sinh nào để điểm danh")
       }
     } else {
-      alert("Đã xảy ra lỗi không xác định")
+      openMessageError("Đã xảy ra lỗi không xác định")
     }
   };
   const parseAttendanceInfo = (thongTinDiemDanh: string | null) => {
@@ -296,11 +330,11 @@ const compareVietnameseNames = (a: string, b: string, sortOrder: string) => {
 
         exportStudents(exportData, tenFile);
       } else {
-        alert('Không có học sinh nào')
+        openMessageError('Không có học sinh nào')
       }
 
     } else {
-      alert('Đã xảy ra lỗi không xác định')
+      openMessageError('Đã xảy ra lỗi không xác định')
     }
 
   };
@@ -335,6 +369,7 @@ const compareVietnameseNames = (a: string, b: string, sortOrder: string) => {
 
   };
   return (
+    <>{contextHolder}
     <Layout>
       <Header
         style={{
@@ -404,6 +439,7 @@ const compareVietnameseNames = (a: string, b: string, sortOrder: string) => {
       </Content>
       <Footer style={{ textAlign: 'center' }}>Bản quyền thuộc về (L&P)</Footer>
     </Layout>
+    </>
   );
 };
 
