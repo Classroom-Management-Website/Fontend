@@ -1,12 +1,12 @@
 import { message } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisV, faPlus, faEdit, faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faEdit, faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
 import CreateClassrooms from './createClassrooms';
 import EditClassrooms from './editClassrooms';
 import { useState } from 'react';
 import { getCookie } from '@/getCookie/getCookie';
 import { useRouter } from 'next/navigation';
-import { Button,Table, Container, Col, Row, Navbar, Nav } from 'react-bootstrap';
+import { Button,Table, Container } from 'react-bootstrap';
 import { config } from '@/config/config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 interface TableClassrooms {

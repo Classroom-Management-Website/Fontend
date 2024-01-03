@@ -1,6 +1,6 @@
 import Table from 'react-bootstrap/Table';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faIdBadge, faEllipsisV, faPlus, faEdit, faEye, faTrash, faFilter, faCheckCircle, faDownload, faArrowRightToBracket, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faFilter} from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
 import CreateStudents from './createStudents';
 import EditStudents from './editStudents';

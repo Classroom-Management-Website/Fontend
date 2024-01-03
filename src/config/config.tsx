@@ -1,4 +1,4 @@
 export const config = {
-    apiUrl: 'https://ngoctuta.io.vn/api',
+    apiUrl: 'http://localhost:8989/api',
   };
   
