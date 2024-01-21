@@ -44,7 +44,7 @@ function getItem(
 const items: MenuItem[] = [
   getItem('HDSD', '1', <YoutubeOutlined />),
   getItem('Ủng hộ tác giả', '2', <BankOutlined />),
-  getItem('User', 'sub1', <UserOutlined />, [
+  getItem('Tài khoản', 'sub1', <UserOutlined />, [
     getItem('Đăng xuất', '3', <LogoutOutlined />),
     getItem('Đổi mật khẩu', '4', <UserSwitchOutlined />),
   ]),
