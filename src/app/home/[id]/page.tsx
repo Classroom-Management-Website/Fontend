@@ -243,6 +243,7 @@ const ViewClassrooms = ({ params }: { params: { id: number } }) => {
           if (!response.ok) {
             openMessageError('Network response was not ok');
           } else {
+            openMessageSuccess("");
             reloadStudents();
           }
         } catch (error) {
